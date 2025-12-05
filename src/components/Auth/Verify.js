@@ -1,11 +1,14 @@
-// src/components/Auth/Verify.js
 import React, { useState, useEffect } from 'react';
 import '../styles/auth.css';
+import useAuth from "../hooks/useAuth";
 
-const Verify = ({ onVerify }) => {
-    const [code, setCode] = useState(['', '', '', '', '', '']);
+const Verify = () => {
+    const [code, setCode] = useState(['', '', '', '']);
     const [timeLeft, setTimeLeft] = useState(120); // 2 minutes
     const [canResend, setCanResend] = useState(false);
+    const [successMessage, setSuccessMessage] = useState(''); // <-- message vert
+
+    const { verifyAccount } = useAuth();
 
     useEffect(() => {
         if (timeLeft > 0) {
@@ -30,25 +33,25 @@ const Verify = ({ onVerify }) => {
         }
     };
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
         const verificationCode = code.join('');
-        if (verificationCode.length === 6) {
-            localStorage.setItem('token', 'dummy-token');
-            if (onVerify) onVerify();
+        const email = new URLSearchParams(window.location.search).get("email");
+
+        try {
+            await verifyAccount(email, verificationCode);
+
+            // Message vert
+            setSuccessMessage("Verification successful! Redirecting to login...");
+
+            // Redirection après 1,5s
+            setTimeout(() => {
+                window.location.href = "/login";
+            }, 1500);
+
+        } catch (err) {
+            alert("Invalid verification code");
         }
-    };
-
-    const handleResend = () => {
-        setTimeLeft(120);
-        setCanResend(false);
-        // Resend verification code logic here
-    };
-
-    const formatTime = (seconds) => {
-        const mins = Math.floor(seconds / 60);
-        const secs = seconds % 60;
-        return `${mins}:${secs < 10 ? '0' : ''}${secs}`;
     };
 
     return (
@@ -57,10 +60,13 @@ const Verify = ({ onVerify }) => {
                 <div className="auth-header">
                     <img src="/logo512.png" alt="Gestion Evenement Logo" className="auth-logo" />
                     <h2>Verify Your Email</h2>
-                    <p>Enter the 6-digit code sent to your email</p>
+                    <p>Enter the 4-digit code sent to your email</p>
                 </div>
 
                 <form onSubmit={handleSubmit} className="auth-form">
+
+                    {successMessage && <p className="success-message">{successMessage}</p>} {/* <-- message vert */}
+
                     <div className="verification-code-container">
                         {code.map((digit, index) => (
                             <input
@@ -76,16 +82,6 @@ const Verify = ({ onVerify }) => {
                         ))}
                     </div>
 
-                    <div className="timer-container">
-                        {!canResend ? (
-                            <p className="timer">Resend code in: {formatTime(timeLeft)}</p>
-                        ) : (
-                            <button type="button" onClick={handleResend} className="resend-button">
-                                Resend Code
-                            </button>
-                        )}
-                    </div>
-
                     <button type="submit" className="auth-button">
                         Verify Email
                     </button>
@@ -93,6 +89,7 @@ const Verify = ({ onVerify }) => {
                     <div className="auth-footer">
                         <p>Didn't receive the code? Check your spam folder or request a new code.</p>
                     </div>
+
                 </form>
             </div>
         </div>

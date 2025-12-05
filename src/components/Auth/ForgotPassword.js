@@ -68,7 +68,6 @@ const ForgotPassword = () => {
             }, 2000);
         }, 1500);
     };
-
     const handleInputChange = (index, value) => {
         if (value.length <= 1 && /^[0-9]*$/.test(value)) {
             const newCode = [...code];

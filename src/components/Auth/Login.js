@@ -1,42 +1,48 @@
-// src/components/Auth/Login.js
 import React, { useState } from 'react';
 import '../styles/auth.css';
+import useAuth from "../hooks/useAuth";
 
-const Login = ({ onLogin }) => {
+const Login = () => {
     const [formData, setFormData] = useState({
         email: '',
         password: '',
     });
     const [errors, setErrors] = useState({});
+    const [successMessage, setSuccessMessage] = useState('');
+    const { authenticate } = useAuth(); // <-- notre hook
 
     const handleChange = (e) => {
         const { name, value } = e.target;
-        setFormData({
-            ...formData,
-            [name]: value,
-        });
+        setFormData({ ...formData, [name]: value });
     };
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
         const newErrors = {};
 
-        if (!formData.email) {
-            newErrors.email = 'Email is required';
-        } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
-            newErrors.email = 'Email is invalid';
-        }
+        if (!formData.email) newErrors.email = 'Email is required';
+        else if (!/\S+@\S+\.\S+/.test(formData.email)) newErrors.email = 'Email is invalid';
+        if (!formData.password) newErrors.password = 'Password is required';
 
-        if (!formData.password) {
-            newErrors.password = 'Password is required';
-        }
-
-        if (Object.keys(newErrors).length === 0) {
-            // Simulate API call
-            localStorage.setItem('token', 'dummy-token');
-            if (onLogin) onLogin();
-        } else {
+        if (Object.keys(newErrors).length > 0) {
             setErrors(newErrors);
+            return;
+        }
+
+        try {
+            const data = await authenticate(formData);
+
+            // Message vert
+            setSuccessMessage("Login successful! Redirecting to home...");
+
+            // Redirection après 1,5s
+            setTimeout(() => {
+                window.location.href = "/"; // ou dashboard si tu as
+            }, 1500);
+
+        } catch (err) {
+            console.error(err.response || err);
+            alert("Login failed! Check your credentials.");
         }
     };
 
@@ -50,6 +56,9 @@ const Login = ({ onLogin }) => {
                 </div>
 
                 <form onSubmit={handleSubmit} className="auth-form">
+
+                    {successMessage && <p className="success-message">{successMessage}</p>} {/* message vert */}
+
                     <div className="form-group">
                         <label htmlFor="email">Email Address</label>
                         <input

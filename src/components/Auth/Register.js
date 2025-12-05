@@ -1,54 +1,53 @@
-// src/components/Auth/Register.js
 import React, { useState } from 'react';
 import '../styles/auth.css';
+import useAuth from "../hooks/useAuth";
+import {mapRegisterRequest} from "../../mappers/authMapper";
 
-const Register = ({ onRegister }) => {
+const Register = () => {
     const [formData, setFormData] = useState({
-        name: '',
+        username: '',
         email: '',
         password: '',
-        confirmPassword: '',
     });
+
     const [errors, setErrors] = useState({});
+    const [successMessage, setSuccessMessage] = useState(''); // <-- message vert
+    const { register } = useAuth();
 
     const handleChange = (e) => {
         const { name, value } = e.target;
-        setFormData({
-            ...formData,
-            [name]: value,
-        });
+        setFormData({ ...formData, [name]: value });
     };
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
         const newErrors = {};
 
-        if (!formData.name.trim()) {
-            newErrors.name = 'Name is required';
-        }
+        if (!formData.username) newErrors.username = "Username is required";
+        if (!formData.email) newErrors.email = "Email is required";
+        else if (!/\S+@\S+\.\S+/.test(formData.email)) newErrors.email = "Email is invalid";
+        if (!formData.password) newErrors.password = "Password is required";
 
-        if (!formData.email) {
-            newErrors.email = 'Email is required';
-        } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
-            newErrors.email = 'Email is invalid';
-        }
-
-        if (!formData.password) {
-            newErrors.password = 'Password is required';
-        } else if (formData.password.length < 6) {
-            newErrors.password = 'Password must be at least 6 characters';
-        }
-
-        if (formData.password !== formData.confirmPassword) {
-            newErrors.confirmPassword = 'Passwords do not match';
-        }
-
-        if (Object.keys(newErrors).length === 0) {
-            // Simulate API call
-            localStorage.setItem('token', 'dummy-token');
-            if (onRegister) onRegister();
-        } else {
+        if (Object.keys(newErrors).length > 0) {
             setErrors(newErrors);
+            return;
+        }
+
+        try {
+            const payload = mapRegisterRequest(formData);
+            await register(payload);
+
+            // Affiche le message vert
+            setSuccessMessage("Registered successfully! Please verify your email.");
+
+            // Redirection vers VerifyPage après 1.5 secondes
+            setTimeout(() => {
+                window.location.href = `/verify?email=${formData.email}`;
+            }, 1500);
+
+        } catch (err) {
+            console.error(err.response || err);
+            alert("Registration failed!");
         }
     };
 
@@ -62,18 +61,21 @@ const Register = ({ onRegister }) => {
                 </div>
 
                 <form onSubmit={handleSubmit} className="auth-form">
+
+                    {successMessage && <p className="success-message">{successMessage}</p>} {/* <-- message vert */}
+
                     <div className="form-group">
-                        <label htmlFor="name">Full Name</label>
+                        <label htmlFor="username">Username</label>
                         <input
                             type="text"
-                            id="name"
-                            name="name"
-                            value={formData.name}
+                            id="username"
+                            name="username"
+                            value={formData.username}
                             onChange={handleChange}
-                            className={errors.name ? 'input-error' : ''}
-                            placeholder="Enter your full name"
+                            className={errors.username ? 'input-error' : ''}
+                            placeholder="Enter a username"
                         />
-                        {errors.name && <span className="error-message">{errors.name}</span>}
+                        {errors.username && <span className="error-message">{errors.username}</span>}
                     </div>
 
                     <div className="form-group">
@@ -104,20 +106,6 @@ const Register = ({ onRegister }) => {
                         {errors.password && <span className="error-message">{errors.password}</span>}
                     </div>
 
-                    <div className="form-group">
-                        <label htmlFor="confirmPassword">Confirm Password</label>
-                        <input
-                            type="password"
-                            id="confirmPassword"
-                            name="confirmPassword"
-                            value={formData.confirmPassword}
-                            onChange={handleChange}
-                            className={errors.confirmPassword ? 'input-error' : ''}
-                            placeholder="Confirm your password"
-                        />
-                        {errors.confirmPassword && <span className="error-message">{errors.confirmPassword}</span>}
-                    </div>
-
                     <button type="submit" className="auth-button">
                         Create Account
                     </button>
@@ -127,6 +115,7 @@ const Register = ({ onRegister }) => {
                             Already have an account? <a href="/login">Sign in</a>
                         </p>
                     </div>
+
                 </form>
             </div>
         </div>
