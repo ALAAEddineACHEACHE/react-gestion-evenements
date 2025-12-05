@@ -14,8 +14,13 @@ Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
 The page will reload when you make changes.\
 You may also see any lint errors in the console.
 
+### `Interfaces de Front End`
 <img width="1883" height="867" alt="image" src="https://github.com/user-attachments/assets/f4357f98-9d12-4d38-ab35-a73c267251b9" />
-
+<img width="1695" height="830" alt="image" src="https://github.com/user-attachments/assets/d3e786a9-3ed4-4773-9837-d99b133fa104" />
+<img width="1902" height="847" alt="image" src="https://github.com/user-attachments/assets/244402f4-7c15-4d48-9d64-462c1a291f91" />
+<img width="1887" height="862" alt="image" src="https://github.com/user-attachments/assets/4fe28698-0c26-492e-9998-6d8f427ba6b8" />
+<img width="1882" height="868" alt="image" src="https://github.com/user-attachments/assets/edb715a1-fcef-4ede-9c49-f5c7eb8216c9" />
+<img width="1530" height="853" alt="image" src="https://github.com/user-attachments/assets/5a806b36-4486-40ba-902c-3af209131f53" />
 
 ### `npm run build`
 
