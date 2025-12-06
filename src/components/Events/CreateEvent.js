@@ -1,12 +1,27 @@
 // src/components/Events/CreateEvent.js
+
 import React, { useState } from 'react';
 import EventForm from './EventForm';
+import EventPreview from './EventPreview';
 import '../styles/createEvent.css';
 
 const CreateEvent = () => {
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [successMessage, setSuccessMessage] = useState('');
     const [errorMessage, setErrorMessage] = useState('');
+
+    // 🔥 Preview state
+    const [eventPreview, setEventPreview] = useState({
+        imagePreview: null
+    });
+
+    // 🔥 Callback from EventForm
+    const handleFormChange = (data) => {
+        setEventPreview(prev => ({
+            ...prev,
+            ...data
+        }));
+    };
 
     const handleSubmit = async (eventData) => {
         setIsSubmitting(true);
@@ -20,10 +35,8 @@ const CreateEvent = () => {
             console.log('Event created:', eventData);
             setSuccessMessage('Event created successfully!');
 
-            // Reset form after 2 seconds
-            setTimeout(() => {
-                setSuccessMessage('');
-            }, 3000);
+            // Reset after animation
+            setTimeout(() => setSuccessMessage(''), 3000);
 
         } catch (error) {
             setErrorMessage('Failed to create event. Please try again.');
@@ -34,6 +47,7 @@ const CreateEvent = () => {
 
     return (
         <div className="create-event-container">
+
             <div className="create-event-header">
                 <div className="header-content">
                     <h1>Create New Event</h1>
@@ -44,6 +58,7 @@ const CreateEvent = () => {
                 </div>
             </div>
 
+            {/* --- FORM --- */}
             <div className="create-event-card">
                 {successMessage && (
                     <div className="success-message">
@@ -62,21 +77,32 @@ const CreateEvent = () => {
                 <EventForm
                     onSubmit={handleSubmit}
                     isSubmitting={isSubmitting}
+                    onFormChange={handleFormChange}
                 />
             </div>
 
+            {/* --- PREVIEW --- */}
             <div className="event-preview-section">
                 <h3>Preview</h3>
+
                 <div className="preview-card">
-                    <p>Your event will appear here as you fill the form...</p>
-                    <div className="preview-placeholder">
-                        <span className="preview-icon">👁️</span>
-                        <p>Live preview available</p>
-                    </div>
+                    {eventPreview.imagePreview ? (
+                        <img
+                            src={eventPreview.imagePreview}
+                            alt="Preview"
+                            className="preview-image"
+                        />
+                    ) : (
+                        <div className="preview-placeholder">
+                            <span className="preview-icon">👁️</span>
+                            <p>Your event will appear here as you fill the form...</p>
+                            <p>Live preview available</p>
+                        </div>
+                    )}
                 </div>
             </div>
-        </div>
-    );
+            </div>
+            );
 };
 
 export default CreateEvent;

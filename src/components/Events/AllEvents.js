@@ -1,8 +1,7 @@
 // src/components/Events/AllEvents.js
 import React, { useState, useEffect } from 'react';
 import EventCard from './EventCard';
-import '../styles/events.css';
-
+import "../styles/events.css";
 const AllEvents = () => {
     const [events, setEvents] = useState([]);
     const [filter, setFilter] = useState('all');

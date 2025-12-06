@@ -2,7 +2,8 @@
 import React, { useState } from 'react';
 import DateTimePicker from '../UI/DateTimePicker';
 
-const EventForm = ({ onSubmit, isSubmitting }) => {
+
+const EventForm = ({ onSubmit, isSubmitting,onFormChange  }) => {
     const [formData, setFormData] = useState({
         title: '',
         description: '',
@@ -55,10 +56,25 @@ const EventForm = ({ onSubmit, isSubmitting }) => {
 
     const handleImageChange = (e) => {
         const file = e.target.files[0];
+        if (!file) return;
+
+        const previewUrl = URL.createObjectURL(file); // 🔥 OBLIGATOIRE
+
+        setFormData(prev => ({
+            ...prev,
+            image: file
+        }));
+
         if (file) {
-            setFormData(prev => ({ ...prev, image: file }));
+            onFormChange({
+                imagePreview: previewUrl
+            });
         }
+
     };
+
+
+
 
     const validateForm = () => {
         const newErrors = {};
@@ -92,8 +108,8 @@ const EventForm = ({ onSubmit, isSubmitting }) => {
         } else if (formData.totalTickets < 1) {
             newErrors.totalTickets = 'Must have at least 1 ticket';
         } else if (formData.totalTickets > 4) {
-        newErrors.totalTickets = 'You cannot reserve more than 4 Tickets';
-    }
+            newErrors.totalTickets = 'You cannot reserve more than 4 Tickets';
+        }
 
         if (!formData.ticketPrice) {
             newErrors.ticketPrice = 'Ticket price is required';

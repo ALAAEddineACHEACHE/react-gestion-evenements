@@ -10,6 +10,8 @@ const DateTimePicker = ({ id, value, onChange, error, minDate }) => {
         setDate(newDate);
         if (newDate && time) {
             onChange(`${newDate}T${time}`);
+        } else if (newDate) {
+            onChange(`${newDate}T00:00`);
         }
     };
 
@@ -30,15 +32,16 @@ const DateTimePicker = ({ id, value, onChange, error, minDate }) => {
                     onChange={handleDateChange}
                     className={`date-input ${error ? 'input-error' : ''}`}
                     min={minDate}
+                    required
                 />
                 <input
                     type="time"
                     value={time}
                     onChange={handleTimeChange}
                     className={`time-input ${error ? 'input-error' : ''}`}
+                    required
                 />
             </div>
-            {error && <span className="error-text">{error}</span>}
         </div>
     );
 };

@@ -11,6 +11,7 @@ import Footer from './components/Layout/Footer';
 import ForgotPassword from "./components/Auth/ForgotPassword";
 import Dashboard from "./pages/Dashboard";
 import CreateEvent from "./components/Events/CreateEvent";
+import ProtectedOrganizerRoute from "./components/ProtectedOrganizerRoute";
 
 function App() {
   const isAuthenticated = localStorage.getItem('token');
@@ -29,6 +30,7 @@ function App() {
               <Route path="/dashboard" element={isAuthenticated ? <Dashboard /> : <Navigate to="/login" />} />
               <Route path="/create-event" element={isAuthenticated ? <CreateEvent /> : <Navigate to="/login" />} />
               <Route path="/events" element={isAuthenticated ? <AllEvents /> : <Navigate to="/login" />} />
+              <Route path="/create-event" element={<ProtectedOrganizerRoute><CreateEvent /></ProtectedOrganizerRoute>}/>
             </Routes>
           </div>
           <Footer />
