@@ -10,6 +10,7 @@ import Navbar from './components/Layout/Navbar';
 import Footer from './components/Layout/Footer';
 import ForgotPassword from "./components/Auth/ForgotPassword";
 import Dashboard from "./pages/Dashboard";
+import CreateEvent from "./components/Events/CreateEvent";
 
 function App() {
   const isAuthenticated = localStorage.getItem('token');
@@ -26,6 +27,7 @@ function App() {
               <Route path="/verify" element={<Verify />} />
               <Route path="/forgot-password" element={<ForgotPassword />} />
               <Route path="/dashboard" element={isAuthenticated ? <Dashboard /> : <Navigate to="/login" />} />
+              <Route path="/create-event" element={isAuthenticated ? <CreateEvent /> : <Navigate to="/login" />} />
               <Route path="/events" element={isAuthenticated ? <AllEvents /> : <Navigate to="/login" />} />
             </Routes>
           </div>

@@ -26,6 +26,7 @@ const Navbar = () => {
                         <>
                             <Link to="/dashboard" className="nav-link">Dashboard</Link>
                             <Link to="/events" className="nav-link">Events</Link>
+                            <Link to="/create-event" className="nav-link">Create Event</Link>
                             <button onClick={handleLogout} className="nav-button">Logout</button>
                         </>
                     ) : (

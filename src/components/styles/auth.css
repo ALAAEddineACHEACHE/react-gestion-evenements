@@ -384,7 +384,15 @@
     font-size: 12px;
     font-weight: bold;
 }
-
+.error-message-box {
+    background-color: #f8d7da;
+    color: #721c24;
+    padding: 12px;
+    border-radius: 6px;
+    text-align: center;
+    margin-bottom: 15px;
+    border-left: 4px solid #dc3545;
+}
 .progress-steps {
     display: flex;
     align-items: center;

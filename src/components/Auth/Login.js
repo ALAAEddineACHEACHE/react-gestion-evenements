@@ -7,9 +7,11 @@ const Login = () => {
         email: '',
         password: '',
     });
+
     const [errors, setErrors] = useState({});
     const [successMessage, setSuccessMessage] = useState('');
-    const { authenticate } = useAuth(); // <-- notre hook
+    const [errorMessage, setErrorMessage] = useState('');
+    const { authenticate } = useAuth();
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -18,8 +20,11 @@ const Login = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        const newErrors = {};
 
+        setErrorMessage(""); // reset error message
+        setSuccessMessage(""); // reset success message
+
+        const newErrors = {};
         if (!formData.email) newErrors.email = 'Email is required';
         else if (!/\S+@\S+\.\S+/.test(formData.email)) newErrors.email = 'Email is invalid';
         if (!formData.password) newErrors.password = 'Password is required';
@@ -31,18 +36,20 @@ const Login = () => {
 
         try {
             const data = await authenticate(formData);
+            const role = data?.user?.role;
 
-            // Message vert
-            setSuccessMessage("Login successful! Redirecting to home...");
+            setSuccessMessage("Login successful! Redirecting...");
 
-            // Redirection après 1,5s
             setTimeout(() => {
-                window.location.href = "/"; // ou dashboard si tu as
-            }, 1500);
+                if (role === "ROLE_ORGANIZER") window.location.href = "/create-event";
+                else if (role === "ROLE_USER") window.location.href = "/events";
+                else if (role === "ROLE_ADMIN") window.location.href = "/dashboard";
+                else window.location.href = "/";
+            }, 1400);
 
         } catch (err) {
             console.error(err.response || err);
-            alert("Login failed! Check your credentials.");
+            setErrorMessage("Invalid credentials. Please try again.");
         }
     };
 
@@ -57,7 +64,19 @@ const Login = () => {
 
                 <form onSubmit={handleSubmit} className="auth-form">
 
-                    {successMessage && <p className="success-message">{successMessage}</p>} {/* message vert */}
+                    {/* Success Message */}
+                    {successMessage && (
+                        <p className="success-message">
+                            {successMessage}
+                        </p>
+                    )}
+
+                    {/* Error Message */}
+                    {errorMessage && (
+                        <p className="error-message-box">
+                            {errorMessage}
+                        </p>
+                    )}
 
                     <div className="form-group">
                         <label htmlFor="email">Email Address</label>

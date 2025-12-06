@@ -1,5 +1,5 @@
 export const mapRegisterRequest = (form) => ({
-    username: form.username, // <-- remplacer form.name par form.username
+    username: form.username,
     email: form.email,
     password: form.password,
     role: "ROLE_USER"
