@@ -2,7 +2,7 @@ export const mapRegisterRequest = (form) => ({
     username: form.username,
     email: form.email,
     password: form.password,
-    role: "ROLE_USER"
+    role: form.role
 });
 
 export const mapLoginRequest = (form) => ({

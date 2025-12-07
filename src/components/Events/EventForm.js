@@ -22,9 +22,7 @@ const EventForm = ({ onSubmit, isSubmitting,onFormChange  }) => {
     const categories = [
         { value: 'conference', label: 'Conference', emoji: '🎤' },
         { value: 'workshop', label: 'Workshop', emoji: '💡' },
-        { value: 'concert', label: 'Concert', emoji: '🎵' },
         { value: 'sports', label: 'Sports', emoji: '⚽' },
-        { value: 'festival', label: 'Festival', emoji: '🎪' },
         { value: 'networking', label: 'Networking', emoji: '🤝' },
         { value: 'exhibition', label: 'Exhibition', emoji: '🖼️' },
         { value: 'other', label: 'Other', emoji: '🎭' }
@@ -60,11 +58,7 @@ const EventForm = ({ onSubmit, isSubmitting,onFormChange  }) => {
 
         const previewUrl = URL.createObjectURL(file); // 🔥 OBLIGATOIRE
 
-        setFormData(prev => ({
-            ...prev,
-            image: file
-        }));
-
+        setFormData({ ...formData, image: file });
         if (file) {
             onFormChange({
                 imagePreview: previewUrl

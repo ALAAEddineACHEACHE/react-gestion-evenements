@@ -1,9 +1,10 @@
 import { useContext } from "react";
+import { AuthContext } from "../../providers/AuthProvider";
+
 import { registerUser, verifyUser, loginUser } from "../services/authService";
-import {AuthContext} from "../../providers/AuthProvider";
 
 export default function useAuth() {
-    const { login } = useContext(AuthContext);
+    const { user, token, login, logout } = useContext(AuthContext);
 
     const register = async (form) => {
         return await registerUser(form);
@@ -14,10 +15,10 @@ export default function useAuth() {
     };
 
     const authenticate = async (form) => {
-        const data = await loginUser(form);
-        login(data);
+        const data = await loginUser(form); // { token, user }
+        login(data); // stocke token + user
         return data;
     };
 
-    return { register, verifyAccount, authenticate };
+    return { user, token, login, logout, register, verifyAccount, authenticate };
 }

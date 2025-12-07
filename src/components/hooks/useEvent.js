@@ -1,4 +1,4 @@
-import { createEvent } from "../services/eventService";
+import { createEvent, uploadEventImage } from "../services/eventService";
 import useAuth from "./useAuth";
 
 export default function useEvents() {
@@ -8,5 +8,9 @@ export default function useEvents() {
         return await createEvent(form, token);
     };
 
-    return { create };
+    const uploadImage = async (id, image) => {
+        return await uploadEventImage(id, image, token);
+    };
+
+    return { create, uploadImage };
 }

@@ -2,13 +2,16 @@
 
 import React, { useState } from 'react';
 import EventForm from './EventForm';
-import EventPreview from './EventPreview';
 import '../styles/createEvent.css';
+import useEvents from "../hooks/useEvent";
 
 const CreateEvent = () => {
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [successMessage, setSuccessMessage] = useState('');
     const [errorMessage, setErrorMessage] = useState('');
+    const { create, uploadImage } = useEvents();
+    const [resetKey, setResetKey] = useState(0);
+
 
     // 🔥 Preview state
     const [eventPreview, setEventPreview] = useState({
@@ -22,28 +25,34 @@ const CreateEvent = () => {
             ...data
         }));
     };
-
-    const handleSubmit = async (eventData) => {
+    const handleSubmit = async (form) => {
         setIsSubmitting(true);
-        setErrorMessage('');
         setSuccessMessage('');
+        setErrorMessage('');
 
         try {
-            // Simulate API call
-            await new Promise(resolve => setTimeout(resolve, 1500));
+            const res = await create(form);
+            const eventId = res.event.id;
 
-            console.log('Event created:', eventData);
-            setSuccessMessage('Event created successfully!');
+            if (form.image) {
+                await uploadImage(eventId, form.image);
+            }
 
-            // Reset after animation
-            setTimeout(() => setSuccessMessage(''), 3000);
-
-        } catch (error) {
-            setErrorMessage('Failed to create event. Please try again.');
+            setSuccessMessage("Event created successfully!");
+            setTimeout(() => {
+                setSuccessMessage('');
+                setResetKey(prev => prev + 1);  // 🔥 force reset du formulaire
+            }, 4000);
+        } catch (err) {
+            console.error(err);
+            setErrorMessage("Failed to create event!");
+            setTimeout(() => setErrorMessage(''), 3000);
         } finally {
             setIsSubmitting(false);
         }
     };
+
+
 
     return (
         <div className="create-event-container">
@@ -75,6 +84,7 @@ const CreateEvent = () => {
                 )}
 
                 <EventForm
+                    key={resetKey}
                     onSubmit={handleSubmit}
                     isSubmitting={isSubmitting}
                     onFormChange={handleFormChange}
