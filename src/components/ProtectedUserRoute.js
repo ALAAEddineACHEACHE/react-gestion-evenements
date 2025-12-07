@@ -1,14 +1,17 @@
-import { Navigate } from "react-router-dom";
-import { useAuth } from "../providers/AuthProvider";
+// src/components/Auth/ProtectedUserRoute.js
+import React from 'react';
+import { Navigate } from 'react-router-dom';
 
-export default function ProtectedUserRoute({ children }) {
-    const { user } = useAuth();
+const ProtectedUserRoute = ({ children }) => {
+    const token = localStorage.getItem('token');
+    const userRole = localStorage.getItem('role');
 
-    if (!user) return <Navigate to="/login" />;
-
-    if (!user.role.includes("ROLE_USER")) {
-        return <Navigate to="/forbidden" />;
+    if (!token) {
+        return <Navigate to="/login" />;
     }
 
+    // Tous les rôles authentifiés peuvent voir les événements
     return children;
-}
+};
+
+export default ProtectedUserRoute;

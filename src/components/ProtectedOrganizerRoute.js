@@ -1,16 +1,29 @@
-import { Navigate } from "react-router-dom";
-import { useAuth } from "../providers/AuthProvider";
+// src/components/Auth/ProtectedOrganizerRoute.js
+import React from 'react';
+import { Navigate } from 'react-router-dom';
 
-export default function ProtectedOrganizerRoute({ children }) {
-    const { user } = useAuth();
+const ProtectedOrganizerRoute = ({ children }) => {
+    const token = localStorage.getItem('token');
+    const userRole = localStorage.getItem('role'); // 'ROLE_USER', 'ROLE_ADMIN', 'ROLE_ORGANIZER'
 
-    // pas connecté → login
-    if (!user) return <Navigate to="/login" />;
+    if (!token) {
+        return <Navigate to="/login" />;
+    }
 
-    // check du role
-    if (!user.roles.includes("ROLE_ORGANIZER")) {
-        return <Navigate to="/forbidden" />;
+    // Seul ROLE_ORGANIZER peut accéder
+    if (userRole !== 'ROLE_ORGANIZER') {
+        // Rediriger selon le rôle
+        switch(userRole) {
+            case 'ROLE_ADMIN':
+                return <Navigate to="/dashboard" />;
+            case 'ROLE_USER':
+                return <Navigate to="/events" />;
+            default:
+                return <Navigate to="/login" />;
+        }
     }
 
     return children;
-}
+};
+
+export default ProtectedOrganizerRoute;

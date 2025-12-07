@@ -1,64 +1,48 @@
 // src/components/Events/AllEvents.js
+"use client";
 import React, { useState, useEffect } from 'react';
 import EventCard from './EventCard';
-import "../styles/events.css";
+import '../styles/events.css';
+import {Link} from "react-router-dom";
+import useEvents from "../hooks/useEvent";
+
 const AllEvents = () => {
     const [events, setEvents] = useState([]);
     const [filter, setFilter] = useState('all');
     const [search, setSearch] = useState('');
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState('');
+    const userRole = localStorage.getItem('role');
+    const { deleteEventById, getAllEvents } = useEvents(); // Votre hook
 
-    // Sample events data
-    const sampleEvents = [
-        {
-            id: 1,
-            title: 'Tech Conference 2024',
-            description: 'Annual technology conference featuring the latest innovations',
-            date: '2024-06-15',
-            time: '09:00',
-            location: 'Convention Center',
-            category: 'Conference',
-            attendees: 250,
-            image: 'https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=400',
-        },
-        {
-            id: 2,
-            title: 'Music Festival',
-            description: 'Three-day outdoor music festival',
-            date: '2024-07-20',
-            time: '14:00',
-            location: 'Central Park',
-            category: 'Music',
-            attendees: 5000,
-            image: 'https://images.unsplash.com/photo-1470225620780-dba8ba36b745?w-400',
-        },
-        {
-            id: 3,
-            title: 'Business Workshop',
-            description: 'Learn effective business strategies',
-            date: '2024-05-10',
-            time: '10:00',
-            location: 'Business Center',
-            category: 'Workshop',
-            attendees: 50,
-            image: 'https://images.unsplash.com/photo-1542744173-8e7e53415bb0?w=400',
-        },
-        {
-            id: 4,
-            title: 'Art Exhibition',
-            description: 'Contemporary art exhibition',
-            date: '2024-08-05',
-            time: '11:00',
-            location: 'Art Gallery',
-            category: 'Art',
-            attendees: 200,
-            image: 'https://images.unsplash.com/photo-1541961017774-22349e4a1262?w=400',
-        },
-    ];
+    const fetchEvents = async () => {
+        try {
+            setLoading(true);
+            const data = await getAllEvents();
+            setEvents(data);
+        } catch (err) {
+            setError('Failed to load events');
+            console.error(err);
+        } finally {
+            setLoading(false);
+        }
+    };
+
 
     useEffect(() => {
-        // Simulate API call
-        setEvents(sampleEvents);
+        fetchEvents();
     }, []);
+
+
+    const handleDelete = async (eventId) => {
+        try {
+            await deleteEventById(eventId);
+            // Mettre à jour la liste
+            setEvents(events.filter(event => event.id !== eventId));
+        } catch (err) {
+            console.error('Failed to delete event:', err);
+        }
+    };
 
     const filteredEvents = events.filter((event) => {
         const matchesFilter = filter === 'all' || event.category === filter;
@@ -67,14 +51,45 @@ const AllEvents = () => {
         return matchesFilter && matchesSearch;
     });
 
-    const categories = ['all', 'Conference', 'Music', 'Workshop', 'Art', 'Sports', 'Other'];
+    const categories = ['all', ...new Set(events.map(event => event.category).filter(Boolean))];
+
+    if (loading) {
+        return (
+            <div className="loading-container">
+                <div className="loading-spinner"></div>
+                <p>Loading events...</p>
+            </div>
+        );
+    }
+
+    if (error) {
+        return (
+            <div className="error-container">
+                <p>{error}</p>
+            </div>
+        );
+    }
 
     return (
         <div className="events-container">
             <div className="events-header">
                 <h1>All Events</h1>
-                <p>Discover and manage your events</p>
+                <p>
+                    {userRole === 'ROLE_USER' && 'Discover and book amazing events'}
+                    {userRole === 'ROLE_ORGANIZER' && 'Manage and organize your events'}
+                    {userRole === 'ROLE_ADMIN' && 'View all events in the system'}
+                </p>
             </div>
+
+            {/* Créer un événement - seulement pour ORGANIZER */}
+            {userRole === 'ROLE_ORGANIZER' && (
+                <div className="create-event-banner">
+                    <Link to="/create-event" className="create-event-button">
+                        <span className="button-icon">➕</span>
+                        Create New Event
+                    </Link>
+                </div>
+            )}
 
             <div className="events-controls">
                 <div className="search-container">
@@ -104,7 +119,11 @@ const AllEvents = () => {
             <div className="events-grid">
                 {filteredEvents.length > 0 ? (
                     filteredEvents.map((event) => (
-                        <EventCard key={event.id} event={event} />
+                        <EventCard
+                            key={event.id}
+                            event={event}
+                            onDelete={handleDelete}
+                        />
                     ))
                 ) : (
                     <div className="no-events">
@@ -113,17 +132,24 @@ const AllEvents = () => {
                 )}
             </div>
 
+            {/* Stats - différentes selon le rôle */}
             <div className="events-stats">
                 <div className="stat-card">
                     <h3>{events.length}</h3>
                     <p>Total Events</p>
                 </div>
+
+                {userRole === 'ROLE_ORGANIZER' && (
+                    <div className="stat-card">
+                        <h3>
+                            {events.filter(e => e.organizerId === parseInt(localStorage.getItem('userId'))).length}
+                        </h3>
+                        <p>My Events</p>
+                    </div>
+                )}
+
                 <div className="stat-card">
-                    <h3>{events.reduce((sum, event) => sum + event.attendees, 0)}</h3>
-                    <p>Total Attendees</p>
-                </div>
-                <div className="stat-card">
-                    <h3>{new Set(events.map(event => event.category)).size}</h3>
+                    <h3>{categories.length - 1}</h3>
                     <p>Categories</p>
                 </div>
             </div>

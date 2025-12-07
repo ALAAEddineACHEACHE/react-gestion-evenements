@@ -29,14 +29,22 @@ export const uploadEventImage = async (id, image, token) => {
     return response.data;
 };
 
-export const getEvents = async () => {
-    return axios.get(BASE_URL);
+// services/eventService.js
+export const getEvents = async (token = null) => {
+    const headers = {};
+    if (token) {
+        headers.Authorization = `Bearer ${token}`;
+    }
+    return axios.get(BASE_URL, { headers });
 };
 
-export const getEventById = async (id) => {
-    return axios.get(`${BASE_URL}/${id}`);
+export const getEventById = async (id, token = null) => {
+    const headers = {};
+    if (token) {
+        headers.Authorization = `Bearer ${token}`;
+    }
+    return axios.get(`${BASE_URL}/${id}`, { headers });
 };
-
 export const updateEvent = async (id, form, token) => {
     const request = mapEventRequest(form);
 
