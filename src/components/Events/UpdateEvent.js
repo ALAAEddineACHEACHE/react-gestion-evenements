@@ -128,6 +128,7 @@ const UpdateEvent = ({ eventId }) => {
     }
 
     return (
+        <div className="update-event-page">
         <div className="update-event-container">
             {/* Header simplifié */}
             <div className="update-event-header">
@@ -261,47 +262,6 @@ const UpdateEvent = ({ eventId }) => {
                                 </div>
                             </div>
                         </div>
-
-                        {/* Actions dangereuses - Version simplifiée */}
-                        <div className="danger-zone">
-                            <div className="card-header">
-                                <h3>Event Actions</h3>
-                                <span className="card-badge warning">⚡</span>
-                            </div>
-
-                            <div className="danger-content">
-                                <div className="action-item">
-                                    <div className="action-info">
-                                        <h4>Duplicate Event</h4>
-                                        <p>Create a copy of this event with the same details.</p>
-                                    </div>
-                                    <button
-                                        className="secondary-button"
-                                        onClick={handleDuplicate}
-                                        disabled={isSubmitting}
-                                    >
-                                        <span className="button-icon">⎘</span>
-                                        Duplicate
-                                    </button>
-                                </div>
-
-                                <div className="action-item">
-                                    <div className="action-info">
-                                        <h4>Delete Event</h4>
-                                        <p>Permanently delete this event and all associated data.</p>
-                                    </div>
-                                    <button
-                                        className="danger-button"
-                                        onClick={handleDelete}
-                                        disabled={isSubmitting}
-                                    >
-                                        <span className="button-icon">🗑️</span>
-                                        Delete
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-
                         {/* Informations de l'événement */}
                         <div className="info-card">
                             <div className="card-header">
@@ -345,7 +305,7 @@ const UpdateEvent = ({ eventId }) => {
                     </div>
                 </div>
             </div>
-        </div>
+        </div> </div>
     );
 };
 

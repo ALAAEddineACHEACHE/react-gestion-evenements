@@ -1,40 +1,56 @@
-// src/components/Events/EventCard.js
 import React, { useContext } from 'react';
 import { Link } from 'react-router-dom';
 import '../styles/events.css';
-import { AuthContext } from '../../providers/AuthProvider'; // Si vous avez un contexte d'auth
+import { AuthContext } from '../../providers/AuthProvider';
+import {IMAGE_BASE_URL} from "../services/eventService";
 
 const EventCard = ({ event, onDelete }) => {
-    const { user } = useContext(AuthContext); // Récupérer l'utilisateur connecté
-    const userRole = localStorage.getItem('role'); // Ou depuis le contexte
+    const { user } = useContext(AuthContext);
+    const userRole = localStorage.getItem('role');
 
-    const formatDate = (dateString) => {
-        const options = { year: 'numeric', month: 'long', day: 'numeric' };
-        return new Date(dateString).toLocaleDateString('en-US', options);
-    };
+    const formatDate = (dateString) =>
+        new Date(dateString).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
 
-    const formatTime = (dateString) => {
-        if (!dateString) return '';
-        return new Date(dateString).toLocaleTimeString([], {
-            hour: '2-digit',
-            minute: '2-digit'
-        });
-    };
+    const formatTime = (dateString) =>
+        dateString ? new Date(dateString).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : '';
 
     const handleDelete = () => {
-        // Confirmation avant suppression
-        const confirmed = window.confirm("Are you sure you want to delete this event?");
-        if (confirmed) {
+        if (window.confirm("Are you sure you want to delete this event?")) {
             onDelete(event.id);
         }
     };
 
+    const getImageUrl = () => {
+        // Essayez différentes propriétés possibles
+        const imageName = event.image || event.imageUrl || event.image_url;
 
+        if (!imageName) {
+            return 'https://via.placeholder.com/400x200';
+        }
+
+        // Si c'est déjà une URL complète
+        if (imageName.startsWith('http')) {
+            return imageName;
+        }
+
+        // Si c'est un chemin complet avec /uploads/
+        if (imageName.startsWith('/')) {
+            return `http://localhost:8080${imageName}`;
+        }
+
+        // Si c'est juste un nom de fichier
+        return `${IMAGE_BASE_URL}/${imageName}`;
+    };
     return (
         <div className="event-card">
             <div className="event-image">
-
-                <img src={event.image ? `http://localhost:8080${event.image}` : 'https://via.placeholder.com/400x200'} alt={event.title} />
+                <img
+                    src={getImageUrl()}
+                    alt={event.title}
+                    onError={(e) => {
+                        e.target.src = 'https://via.placeholder.com/400x200';
+                    }}
+                />
                 <span className="event-category">{event.category || 'General'}</span>
             </div>
             <div className="event-content">
@@ -42,60 +58,23 @@ const EventCard = ({ event, onDelete }) => {
                 <p className="event-description">{event.description?.substring(0, 100)}...</p>
 
                 <div className="event-details">
-                    <div className="detail-item">
-                        <span className="detail-icon">📍</span>
-                        <span>{event.location}</span>
-                    </div>
-                    <div className="detail-item">
-                        <span className="detail-icon">📅</span>
-                        <span>{formatDate(event.startAt)}</span>
-                    </div>
-                    <div className="detail-item">
-                        <span className="detail-icon">⏰</span>
-                        <span>{formatTime(event.startAt)}</span>
-                    </div>
-                    <div className="detail-item">
-                        <span className="detail-icon">🎟️</span>
-                        <span>{event.totalTickets || '0'} tickets</span>
-                    </div>
+                    <div className="detail-item"><span>📍</span>{event.location}</div>
+                    <div className="detail-item"><span>📅</span>{formatDate(event.startAt)}</div>
+                    <div className="detail-item"><span>⏰</span>{formatTime(event.startAt)}</div>
+                    <div className="detail-item"><span>🎟️</span>{event.totalTickets || 0} tickets</div>
                 </div>
 
-                {/* Actions selon le rôle */}
                 <div className="event-actions">
                     <button className="action-btn primary">View Details</button>
 
-                    {/* ROLE_USER: Peut seulement booker */}
-                    {userRole === 'ROLE_USER' && (
-                        <button className="action-btn book">
-                            <span className="button-icon">🎫</span>
-                            Book Now
-                        </button>
-                    )}
-
-                    {/* ROLE_ORGANIZER: Peut edit et delete */}
+                    {userRole === 'ROLE_USER' && <button className="action-btn book">🎫 Book Now</button>}
                     {userRole === 'ROLE_ORGANIZER' && (
                         <>
-                            <Link to={`/events/${event.id}/edit`} className="action-btn secondary">
-                                <span className="button-icon">✏️</span>
-                                Edit
-                            </Link>
-                            <button
-                                className="action-btn danger"
-                                onClick={handleDelete}
-                            >
-                                <span className="button-icon">🗑️</span>
-                                Delete
-                            </button>
+                            <Link to={`/events/${event.id}/edit`} className="action-btn secondary">✏️ Edit</Link>
+                            <button className="action-btn danger" onClick={handleDelete}>🗑️ Delete</button>
                         </>
                     )}
-
-                    {/* ROLE_ADMIN: Peut voir mais pas modifier (ou peut-être plus d'actions) */}
-                    {userRole === 'ROLE_ADMIN' && (
-                        <button className="action-btn info">
-                            <span className="button-icon">👁️</span>
-                            View Analytics
-                        </button>
-                    )}
+                    {userRole === 'ROLE_ADMIN' && <button className="action-btn info">👁️ View Analytics</button>}
                 </div>
             </div>
         </div>

@@ -57,7 +57,7 @@ const Register = () => {
                 <div className="auth-header">
                     <img src="/logo512.png" alt="Gestion Evenement Logo" className="auth-logo" />
                     <h2>Create Account</h2>
-                    <p>Join us to start managing events</p>
+                    <p>Join us to check All Events</p>
                 </div>
 
                 <form onSubmit={handleSubmit} className="auth-form">

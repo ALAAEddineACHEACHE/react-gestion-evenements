@@ -2,6 +2,7 @@ import axios from "axios";
 import {mapEventRequest} from "../../mappers/eventMapper";
 
 const BASE_URL = "http://localhost:8080/api/events";
+export const IMAGE_BASE_URL = "http://localhost:8080/api/events/uploads";
 
 export const createEvent = async (form, token) => {
     const request = mapEventRequest(form);
@@ -15,14 +16,13 @@ export const createEvent = async (form, token) => {
 
     return response.data;
 };
-export const uploadEventImage = async (id, image, token) => {
-    const formData = new FormData();
-    formData.append("image", image);
-
+export const uploadEventImage = async (id, formData, token) => {
+    // Note: formData est déjà un FormData, on ne le crée pas ici
     const response = await axios.post(`${BASE_URL}/${id}/image`, formData, {
         headers: {
             Authorization: `Bearer ${token}`,
-            "Content-Type": "multipart/form-data"
+            // NE PAS mettre "Content-Type": "multipart/form-data" explicitement
+            // Laisser axios le faire automatiquement
         }
     });
 

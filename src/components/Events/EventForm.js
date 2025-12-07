@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import DateTimePicker from '../UI/DateTimePicker';
 
 
-const EventForm = ({ onSubmit, isSubmitting,onFormChange  }) => {
+const EventForm = ({ onSubmit, isSubmitting,onFormChange,mode = "create"  }) => {
     const [formData, setFormData] = useState({
         title: '',
         description: '',
@@ -52,19 +52,38 @@ const EventForm = ({ onSubmit, isSubmitting,onFormChange  }) => {
         }
     };
 
+    // const handleImageChange = (e) => {
+    //     const file = e.target.files[0];
+    //     if (!file) return;
+    //
+    //     const previewUrl = URL.createObjectURL(file); // 🔥 OBLIGATOIRE
+    //
+    //     setFormData({ ...formData, image: file });
+    //     if (file) {
+    //         onFormChange({
+    //             imagePreview: previewUrl
+    //         });
+    //     }
+    //
+    // };
     const handleImageChange = (e) => {
         const file = e.target.files[0];
         if (!file) return;
 
-        const previewUrl = URL.createObjectURL(file); // 🔥 OBLIGATOIRE
+        const previewUrl = URL.createObjectURL(file);
 
-        setFormData({ ...formData, image: file });
-        if (file) {
+        // Mettre à jour le state local
+        setFormData(prev => ({
+            ...prev,
+            image: file
+        }));
+
+        // NOTIFIER le parent (CreateEvent) pour la preview
+        if (onFormChange) {
             onFormChange({
                 imagePreview: previewUrl
             });
         }
-
     };
 
 
@@ -138,7 +157,9 @@ const EventForm = ({ onSubmit, isSubmitting,onFormChange  }) => {
             startAt: new Date(formData.startAt).toISOString(),
             endAt: new Date(formData.endAt).toISOString(),
             totalTickets: parseInt(formData.totalTickets),
-            ticketPrice: parseFloat(formData.ticketPrice)
+            ticketPrice: parseFloat(formData.ticketPrice),
+            category: formData.category,
+            image: formData.image,
         };
 
         onSubmit(eventData);
@@ -403,15 +424,16 @@ const EventForm = ({ onSubmit, isSubmitting,onFormChange  }) => {
                     {isSubmitting ? (
                         <>
                             <span className="spinner"></span>
-                            Creating Event...
+                            {mode === "update" ? "Updating Event..." : "Creating Event..."}
                         </>
                     ) : (
                         <>
                             <span className="button-icon">🎉</span>
-                            Create Event
+                            {mode === "update" ? "Update Event" : "Create Event"}
                         </>
                     )}
                 </button>
+
             </div>
         </form>
     );

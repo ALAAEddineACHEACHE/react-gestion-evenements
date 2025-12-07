@@ -1,12 +1,13 @@
     import {
-        createEvent,
-        deleteEvent,
-        getEventById,
-        getEvents,
-        updateEvent,
-        uploadEventImage
-    } from "../services/eventService";
+    createEvent,
+    deleteEvent,
+    getEventById,
+    getEvents, IMAGE_BASE_URL,
+    updateEvent,
+    uploadEventImage
+} from "../services/eventService";
     import useAuth from "./useAuth";
+    import axios from "axios";
 
     export default function useEvents() {
         const { token } = useAuth();
@@ -15,9 +16,16 @@
             return await createEvent(form, token);
         };
 
-        const uploadImage = async (id, image) => {
-            return await uploadEventImage(id, image, token);
+
+        const uploadImage = async (id, imageFile) => {
+            // Créer FormData correctement
+            const formData = new FormData();
+            formData.append("image", imageFile);
+
+            // Utiliser la fonction existante du service
+            return await uploadEventImage(id, formData, token);
         };
+
         const getAllEvents = async () => {
             const res = await getEvents(token);
             return res.data; // IMPORTANT

@@ -50,6 +50,7 @@ const Navbar = () => {
                             {/* ADMIN */}
                             {role === "ROLE_ADMIN" && (
                                 <>
+                                    <Link to="/events" className="nav-link">Events</Link>
                                     <Link to="/dashboard" className="nav-link">Dashboard</Link>
                                 </>
                             )}

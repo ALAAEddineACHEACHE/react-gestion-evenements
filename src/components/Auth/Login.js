@@ -176,7 +176,7 @@ const Login = () => {
                         <label className="checkbox-container">
                             <input type="checkbox" />
                             <span className="checkmark"></span>
-                            Remember me
+                             Remember me
                         </label>
                         <a href="/forgot-password" className="forgot-password">
                             Forgot password?
@@ -201,11 +201,6 @@ const Login = () => {
                     <div className="auth-footer">
                         <p>
                             Don't have an account? <a href="/register">Sign up</a>
-                        </p>
-                        <p className="demo-credentials">
-                            <small>
-                                Test with: user@example.com / password123
-                            </small>
                         </p>
                     </div>
                 </form>
