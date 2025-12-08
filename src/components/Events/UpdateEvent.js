@@ -64,7 +64,9 @@ const UpdateEvent = () => {
                 setEventData(updatedEventResponse.data);
             } else {
                 // Mettre à jour les données locales
-                setEventData(prev => ({ ...prev, ...eventDataWithoutImage }));
+                setEventData(prev => ({ ...prev, ...eventDataWithoutImage ,
+                    status: prev.status // éviter de perdre status
+                }));
             }
 
             setSuccessMessage('Event updated successfully!');
@@ -82,19 +84,19 @@ const UpdateEvent = () => {
             setIsSubmitting(false);
         }
     };
-    const handleDelete = async () => {
-        if (window.confirm('Are you sure you want to delete this event? This action cannot be undone.')) {
-            try {
-                // Simuler la suppression
-                await new Promise(resolve => setTimeout(resolve, 1000));
-                alert('Event deleted successfully!');
-                // Redirection vers la liste des événements
-                navigate('/events');
-            } catch (error) {
-                setErrorMessage('Failed to delete event');
-            }
-        }
-    };
+    // const handleDelete = async () => {
+    //     if (window.confirm('Are you sure you want to delete this event? This action cannot be undone.')) {
+    //         try {
+    //             // Simuler la suppression
+    //             await new Promise(resolve => setTimeout(resolve, 1000));
+    //             alert('Event deleted successfully!');
+    //             // Redirection vers la liste des événements
+    //             navigate('/events');
+    //         } catch (error) {
+    //             setErrorMessage('Failed to delete event');
+    //         }
+    //     }
+    // };
 
     const formatDateForInput = (dateString) => {
         if (!dateString) return '';
@@ -238,15 +240,6 @@ const UpdateEvent = () => {
                                                 </div>
 
                                                 <div className="meta-item">
-                                                    <span className="meta-icon">📅</span>
-                                                    <span className="meta-text">
-                                                        {eventData.startAt
-                                                            ? new Date(eventData.startAt).toLocaleDateString()
-                                                            : "Date"}
-                                                    </span>
-                                                </div>
-
-                                                <div className="meta-item">
                                                     <span className="meta-icon">⏰</span>
                                                     <span className="meta-text">
                                                         {eventData.startAt
@@ -278,38 +271,55 @@ const UpdateEvent = () => {
                                     </div>
                                 </div>
                             </div>
-
-                            {/* Actions rapides */}
-                            <div className="actions-card">
+                            <div className="info-card">
                                 <div className="card-header">
-                                    <h3>Quick Actions</h3>
-                                    <span className="card-badge warning">⚠️</span>
+                                    <h3>Event Information</h3>
+                                    <span className="card-badge info">ℹ️</span>
                                 </div>
 
-                                <div className="actions-content">
-                                    <button
-                                        className="action-button delete"
-                                        onClick={handleDelete}
-                                    >
-                                        <span className="action-icon">🗑️</span>
-                                        Delete Event
-                                    </button>
+                                <div className="info-content">
 
-                                    <button
-                                        className="action-button secondary"
-                                        onClick={() => navigate('/events')}
-                                    >
-                                        <span className="action-icon">←</span>
-                                        Back to Events
-                                    </button>
+                                    {/* Ticket Price */}
+                                    <div className="info-item">
+                                        <span className="info-label">Ticket Price</span>
+                                        <span className="info-value">
+            {eventData.ticketPrice !== undefined && eventData.ticketPrice !== null
+                ? eventData.ticketPrice + " MAD"
+                : "Unknown"}
+        </span>
+                                    </div>
 
-                                    <button
-                                        className="action-button primary"
-                                        onClick={() => navigate(`/events/${id}`)}
-                                    >
-                                        <span className="action-icon">👁️</span>
-                                        View Event Page
-                                    </button>
+                                    {/* Category */}
+                                    <div className="info-item">
+                                        <span className="info-label">Category</span>
+                                        <span className="info-value">
+            {eventData.category || "Unknown"}
+        </span>
+                                    </div>
+
+                                <div className="info-item">
+                                        <span className="info-label">Created</span>
+                                        <span className="info-value">
+                                        {new Date(eventData.startAt).toLocaleDateString()}
+                                    </span>
+                                    </div>
+
+                                    <div className="info-item">
+                                        <span className="info-label">Last Updated</span>
+                                        <span className="info-value">
+                                        {new Date(eventData.endAt).toLocaleDateString()}
+                                    </span>
+                                    </div>
+
+                                    <div className="info-item">
+                                        <span className="info-label">Event ID</span>
+                                        <span className="info-value code">{eventData.id}</span>
+                                    </div>
+
+                                    <div className="info-item">
+                                        <span className="info-label">Organizer ID</span>
+                                        <span className="info-value code">{eventData.organizerId}</span>
+                                    </div>
                                 </div>
                             </div>
                         </div>

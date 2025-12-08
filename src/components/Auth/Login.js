@@ -1,4 +1,4 @@
-// src/components/Auth/Login.js - Version corrigée avec debugging
+// src/components/Auth/Login.js - Version corrigée avec message de succès
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import '../styles/auth.css';
@@ -12,6 +12,7 @@ const Login = () => {
     const [errors, setErrors] = useState({});
     const [isLoading, setIsLoading] = useState(false);
     const [loginError, setLoginError] = useState('');
+    const [successMessage, setSuccessMessage] = useState('');
 
     const navigate = useNavigate();
     const { authenticate } = useAuth();
@@ -26,11 +27,13 @@ const Login = () => {
             setErrors(prev => ({ ...prev, [name]: '' }));
         }
         if (loginError) setLoginError('');
+        if (successMessage) setSuccessMessage('');
     };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
         setLoginError('');
+        setSuccessMessage('');
 
         // Validation
         const newErrors = {};
@@ -76,24 +79,29 @@ const Login = () => {
 
             console.log('💾 [Login] Data stored in localStorage');
 
+            // Afficher le message de succès
+            setSuccessMessage("Login successful! Redirecting...");
+
             // Déclencher les événements pour mettre à jour l'UI
             window.dispatchEvent(new Event('storage'));
             window.dispatchEvent(new CustomEvent('auth-change'));
 
-            // Rediriger selon le rôle
-            console.log(`🔄 [Login] Redirecting based on role: ${role}`);
-            switch(role) {
-                case 'ROLE_ADMIN':
-                    navigate('/dashboard');
-                    break;
-                case 'ROLE_ORGANIZER':
-                    navigate('/events');
-                    break;
-                case 'ROLE_USER':
-                default:
-                    navigate('/events');
-                    break;
-            }
+            // Attendre 2 secondes pour montrer le message avant de rediriger
+            setTimeout(() => {
+                console.log(`🔄 [Login] Redirecting based on role: ${role}`);
+                switch(role) {
+                    case 'ROLE_ADMIN':
+                        navigate('/dashboard');
+                        break;
+                    case 'ROLE_ORGANIZER':
+                        navigate('/events');
+                        break;
+                    case 'ROLE_USER':
+                    default:
+                        navigate('/events');
+                        break;
+                }
+            }, 2000);
 
         } catch (error) {
             console.error('❌ [Login] Authentication failed:', error);
@@ -120,7 +128,6 @@ const Login = () => {
             }
 
             setLoginError(errorMessage);
-        } finally {
             setIsLoading(false);
         }
     };
@@ -138,6 +145,13 @@ const Login = () => {
                     <div className="error-message-global">
                         <span className="error-icon">!</span>
                         {loginError}
+                    </div>
+                )}
+
+                {successMessage && (
+                    <div className="success-message-global">
+                        <span className="success-icon">✓</span>
+                        {successMessage}
                     </div>
                 )}
 
@@ -176,7 +190,7 @@ const Login = () => {
                         <label className="checkbox-container">
                             <input type="checkbox" />
                             <span className="checkmark"></span>
-                             Remember me
+                            Remember me
                         </label>
                         <a href="/forgot-password" className="forgot-password">
                             Forgot password?

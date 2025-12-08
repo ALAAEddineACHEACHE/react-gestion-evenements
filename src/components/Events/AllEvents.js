@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import EventCard from './EventCard';
 import '../styles/events.css';
-import {Link} from "react-router-dom";
+import { Link } from "react-router-dom";
 import useEvents from "../hooks/useEvent";
 
 const AllEvents = () => {
@@ -13,7 +13,9 @@ const AllEvents = () => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
     const userRole = localStorage.getItem('role');
-    const { deleteEventById, getAllEvents } = useEvents(); // Votre hook
+    const { deleteEventById, getAllEvents } = useEvents();
+    const [showConfirm, setShowConfirm] = useState(false);
+    const [eventToDelete, setEventToDelete] = useState(null);
 
     const fetchEvents = async () => {
         try {
@@ -28,22 +30,17 @@ const AllEvents = () => {
         }
     };
 
-
     useEffect(() => {
         fetchEvents();
     }, []);
-
-
     const handleDelete = async (eventId) => {
         try {
             await deleteEventById(eventId);
-            // Mettre à jour la liste
             setEvents(events.filter(event => event.id !== eventId));
         } catch (err) {
             console.error('Failed to delete event:', err);
         }
     };
-
     const filteredEvents = events.filter((event) => {
         const matchesFilter = filter === 'all' || event.category === filter;
         const matchesSearch = event.title.toLowerCase().includes(search.toLowerCase()) ||
@@ -72,50 +69,57 @@ const AllEvents = () => {
 
     return (
         <div className="events-container">
-            <div className="events-header">
-                <h1>All Events</h1>
-                <p>
-                    {userRole === 'ROLE_USER' && 'Discover and book amazing events'}
-                    {userRole === 'ROLE_ORGANIZER' && 'Manage and organize your events'}
-                    {userRole === 'ROLE_ADMIN' && 'View all events in the system'}
-                </p>
-            </div>
+            {/* En-tête avec le bouton Create Event aligné à droite comme dans la photo */}
+            <div className="events-page-header">
+                <div className="header-content">
+                    <div className="header-text">
+                        <h1>All Events</h1>
+                        <p className="subtitle">
+                            {userRole === 'ROLE_USER' && 'Discover and book amazing events'}
+                            {userRole === 'ROLE_ORGANIZER' && 'Manage and organize your events'}
+                            {userRole === 'ROLE_ADMIN' && 'View all events in the system'}
+                        </p>
+                    </div>
 
-            {/* Créer un événement - seulement pour ORGANIZER */}
-            {userRole === 'ROLE_ORGANIZER' && (
-                <div className="create-event-banner">
-                    <Link to="/create-event" className="create-event-button">
-                        <span className="button-icon">➕</span>
-                        Create New Event
-                    </Link>
-                </div>
-            )}
-
-            <div className="events-controls">
-                <div className="search-container">
-                    <input
-                        type="text"
-                        placeholder="Search events..."
-                        value={search}
-                        onChange={(e) => setSearch(e.target.value)}
-                        className="search-input"
-                    />
-                    <span className="search-icon">🔍</span>
-                </div>
-
-                <div className="filter-container">
-                    {categories.map((category) => (
-                        <button
-                            key={category}
-                            className={`filter-btn ${filter === category ? 'active' : ''}`}
-                            onClick={() => setFilter(category)}
-                        >
-                            {category.charAt(0).toUpperCase() + category.slice(1)}
-                        </button>
-                    ))}
+                    {/* Bouton Create Event aligné à droite */}
+                    {userRole === 'ROLE_ORGANIZER' && (
+                        <Link to="/create-event" className="create-event-btn-main">
+                            <span className="btn-icon">+</span>
+                            Create New Event
+                        </Link>
+                    )}
                 </div>
             </div>
 
+            {/* Contrôles de recherche et filtres */}
+            <div className="events-toolbar">
+                <div className="search-section">
+                    <div className="search-wrapper">
+                        <span className="search-icon">🔍</span>
+                        <input
+                            type="text"
+                            placeholder="Search events..."
+                            value={search}
+                            onChange={(e) => setSearch(e.target.value)}
+                            className="search-input-large"
+                        />
+                    </div>
+
+                    <div className="category-filters">
+                        {categories.map((category) => (
+                            <button
+                                key={category}
+                                className={`category-filter-btn ${filter === category ? 'active' : ''}`}
+                                onClick={() => setFilter(category)}
+                            >
+                                {category === 'all' ? 'All' : category.charAt(0).toUpperCase() + category.slice(1)}
+                            </button>
+                        ))}
+                    </div>
+                </div>
+            </div>
+
+            {/* Grille d'événements */}
             <div className="events-grid">
                 {filteredEvents.length > 0 ? (
                     filteredEvents.map((event) => (
@@ -126,31 +130,47 @@ const AllEvents = () => {
                         />
                     ))
                 ) : (
-                    <div className="no-events">
-                        <p>No events found. Try adjusting your search or filters.</p>
+                    <div className="no-events-message">
+                        <div className="no-events-icon">📅</div>
+                        <h3>No events found</h3>
+                        <p>Try adjusting your search or filters</p>
+                        {userRole === 'ROLE_ORGANIZER' && (
+                            <Link to="/create-event" className="create-first-event-btn">
+                                Create your first event
+                            </Link>
+                        )}
                     </div>
                 )}
             </div>
 
-            {/* Stats - différentes selon le rôle */}
+            {/* Statistiques */}
             <div className="events-stats">
                 <div className="stat-card">
-                    <h3>{events.length}</h3>
-                    <p>Total Events</p>
+                    <div className="stat-icon">📊</div>
+                    <div className="stat-content">
+                        <h3>{events.length}</h3>
+                        <p>Total Events</p>
+                    </div>
                 </div>
 
                 {userRole === 'ROLE_ORGANIZER' && (
                     <div className="stat-card">
-                        <h3>
-                            {events.filter(e => e.organizerId === parseInt(localStorage.getItem('userId'))).length}
-                        </h3>
-                        <p>My Events</p>
+                        <div className="stat-icon">🎯</div>
+                        <div className="stat-content">
+                            <h3>
+                                {events.filter(e => e.organizerId === parseInt(localStorage.getItem('userId'))).length}
+                            </h3>
+                            <p>My Events</p>
+                        </div>
                     </div>
                 )}
 
                 <div className="stat-card">
-                    <h3>{categories.length - 1}</h3>
-                    <p>Categories</p>
+                    <div className="stat-icon">🏷️</div>
+                    <div className="stat-content">
+                        <h3>{categories.length - 1}</h3>
+                        <p>Categories</p>
+                    </div>
                 </div>
             </div>
         </div>

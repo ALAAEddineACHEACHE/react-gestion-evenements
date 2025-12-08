@@ -80,7 +80,7 @@ const CreateEvent = () => {
         <div className="create-event-container">
 
             <div className="create-event-header">
-                <div className="header-content">
+                <div className="header">
                     <h1>Create New Event</h1>
                     <p>Fill in the details below to create an amazing event</p>
                 </div>
@@ -120,11 +120,14 @@ const CreateEvent = () => {
 
                 <div className="preview-card">
                     {eventPreview.imagePreview ? (
-                        <img
-                            src={eventPreview.imagePreview}
-                            alt="Preview"
-                            className="preview-image"
-                        />
+                        <div className="preview-image-container">
+                            <img
+                                src={eventPreview.imagePreview}
+                                alt="Preview"
+                                className="preview-image"
+                            />
+                        </div>
+
                     ) : (
                         <div className="preview-placeholder">
                             <span className="preview-icon">👁️</span>
