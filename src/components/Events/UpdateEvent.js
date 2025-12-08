@@ -144,7 +144,7 @@ const UpdateEvent = () => {
             <div className="update-event-container">
                 {/* Header simplifié */}
                 <div className="update-event-header">
-                    <div className="header-content">
+                    <div className="header">
                         <div className="breadcrumb">
                             <button onClick={() => navigate('/events')} className="breadcrumb-link">
                                 Events
@@ -157,12 +157,13 @@ const UpdateEvent = () => {
                             <span className="breadcrumb-current">Edit</span>
                         </div>
 
-                        <div className="header-main">
+                        <div className="header-content">
                             <h1>
                                 <span className="edit-icon">✏️</span>
                                 Edit Event
+                                {/*<p>Update your event details below</p>*/}
+
                             </h1>
-                            <p>Update your event details below</p>
                         </div>
                     </div>
                 </div>

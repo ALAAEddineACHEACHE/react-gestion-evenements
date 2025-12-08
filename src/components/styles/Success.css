@@ -1,63 +1,63 @@
-/* Success Page Styles */
-.success-card {
-    max-width: 500px;
-    text-align: center;
-}
+/*!* Success Page Styles *!*/
+/*.success-card {*/
+/*    max-width: 500px;*/
+/*    text-align: center;*/
+/*}*/
 
-.success-icon-large {
-    margin-bottom: 20px;
-}
+/*.success-icon-large {*/
+/*    margin-bottom: 20px;*/
+/*}*/
 
-.success-icon-large svg {
-    animation: bounceIn 0.8s ease;
-}
+/*.success-icon-large svg {*/
+/*    animation: bounceIn 0.8s ease;*/
+/*}*/
 
-.success-content {
-    margin: 30px 0;
-}
+/*.success-content {*/
+/*    margin: 30px 0;*/
+/*}*/
 
-.success-message-card {
-    background: #f8f9fa;
-    padding: 20px;
-    border-radius: 10px;
-    margin-bottom: 30px;
-}
+/*.success-message-card {*/
+/*    background: #f8f9fa;*/
+/*    padding: 20px;*/
+/*    border-radius: 10px;*/
+/*    margin-bottom: 30px;*/
+/*}*/
 
-.redirect-timer {
-    font-size: 14px;
-    color: #666;
-    margin-top: 10px;
-    font-style: italic;
-}
+/*.redirect-timer {*/
+/*    font-size: 14px;*/
+/*    color: #666;*/
+/*    margin-top: 10px;*/
+/*    font-style: italic;*/
+/*}*/
 
-.secondary-button {
-    display: inline-block;
-    padding: 12px 24px;
-    background: #f1f3f9;
-    color: #667eea;
-    border: 2px solid #e1e5e9;
-    border-radius: 8px;
-    text-decoration: none;
-    font-weight: 600;
-    margin-top: 15px;
-    transition: all 0.3s ease;
-}
+/*.secondary-button {*/
+/*    display: inline-block;*/
+/*    padding: 12px 24px;*/
+/*    background: #f1f3f9;*/
+/*    color: #667eea;*/
+/*    border: 2px solid #e1e5e9;*/
+/*    border-radius: 8px;*/
+/*    text-decoration: none;*/
+/*    font-weight: 600;*/
+/*    margin-top: 15px;*/
+/*    transition: all 0.3s ease;*/
+/*}*/
 
-.secondary-button:hover {
-    background: #e1e5e9;
-    transform: translateY(-2px);
-}
+/*.secondary-button:hover {*/
+/*    background: #e1e5e9;*/
+/*    transform: translateY(-2px);*/
+/*}*/
 
-@keyframes bounceIn {
-    0% {
-        transform: scale(0.3);
-        opacity: 0;
-    }
-    50% {
-        transform: scale(1.05);
-        opacity: 1;
-    }
-    100% {
-        transform: scale(1);
-    }
-}
+/*@keyframes bounceIn {*/
+/*    0% {*/
+/*        transform: scale(0.3);*/
+/*        opacity: 0;*/
+/*    }*/
+/*    50% {*/
+/*        transform: scale(1.05);*/
+/*        opacity: 1;*/
+/*    }*/
+/*    100% {*/
+/*        transform: scale(1);*/
+/*    }*/
+/*}*/

@@ -1,6 +1,6 @@
 /* src/styles/updateEvent.css */
 .update-event-container {
-    max-width: 1400px;
+    max-width: 1506px;
     margin: 0 auto;
     padding: 30px;
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
@@ -10,7 +10,7 @@
 .update-event-header {
     background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     border-radius: 24px;
-    padding: 40px 50px;
+    padding: 14px 50px;
     color: white;
     margin-bottom: 50px;
     position: relative;
@@ -163,7 +163,6 @@
     color: white;
 }
 
-/* Grid Layout amélioré */
 .update-grid {
     display: grid;
     grid-template-columns: 1.5fr 1fr;
@@ -459,24 +458,6 @@
     background: #f8fafc;
     border-color: #cbd5e0;
 }
-
-/* Ajuster la largeur de la colonne du formulaire */
-.update-event-page .form-column {
-    flex: 1.5;
-}
-
-.update-event-page .preview-column {
-    flex: 1;
-}
-
-
-
-/* Ajuster le grid pour plus d'espace */
-.update-grid {
-    display: flex;
-    gap: 50px;
-}
-
 @media (max-width: 1200px) {
     .update-grid {
         flex-direction: column;
@@ -808,13 +789,30 @@
         padding: 30px 25px;
         border-radius: 20px;
     }
-
-    .header-main h1 {
-        font-size: 32px;
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 15px;
+    .header-content h1 {
+        font-size: 42px;
+        font-weight: 800;
+        margin-bottom: 15px;
+        display: flex;
+        align-items: center;
+        gap: 20px;
+        letter-spacing: -0.5px;
     }
+
+    .header-content h1 p {
+        font-size: 18px;
+        opacity: 0.95;
+        line-height: 1.6;
+        margin-top: 10px;
+        font-weight: 400;
+    }
+
+    /*.header-main h1 {*/
+    /*    font-size: 32px;*/
+    /*    flex-direction: column;*/
+    /*    align-items: flex-start;*/
+    /*    gap: 15px;*/
+    /*}*/
 
     .edit-icon {
         width: 60px;
@@ -832,11 +830,6 @@
         padding: 6px 12px;
         font-size: 14px;
     }
-
-    .update-grid {
-        gap: 25px;
-    }
-
     .card-header {
         padding: 25px;
         flex-direction: column;
