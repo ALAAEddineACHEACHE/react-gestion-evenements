@@ -87,9 +87,9 @@
 
 .search-input-large {
     width: 100%;
-    padding: 14px 20px 14px 48px;
+    padding: 14px 20px 14px 5px;
     border: 2px solid #e1e5e9;
-    border-radius: 12px;
+    border-radius: 24px;
     font-size: 15px;
     transition: all 0.3s ease;
     background: #f8f9fa;
@@ -102,7 +102,7 @@
     box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
 }
 
-.search-wrapper .search-icon {
+ .search-icon {
     position: absolute;
     left: 16px;
     top: 50%;
@@ -223,9 +223,14 @@
 .stat-card:hover {
     transform: translateY(-5px);
 }
-
+.logo {
+    width: 52px;          /* taille réduite */
+    height: 51px;
+    object-fit: contain;  /* garde les proportions */
+    display: block;
+}
 .stat-icon {
-    font-size: 32px;
+    font-size: 40px;
     width: 60px;
     height: 60px;
     background: linear-gradient(135deg, #667eea20 0%, #764ba220 100%);
@@ -256,7 +261,7 @@
     overflow: hidden;
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
     transition: all 0.3s ease;
-    height: 100%;
+    height: 90%;
     display: flex;
     flex-direction: column;
 }
@@ -268,7 +273,7 @@
 
 .event-image {
     position: relative;
-    height: 180px;
+    height: 280px;
     overflow: hidden;
 }
 
@@ -305,7 +310,7 @@
 }
 
 .event-content h3 {
-    font-size: 18px;
+    font-size: 25px;
     color: #333;
     margin-bottom: 10px;
     line-height: 1.4;
@@ -313,7 +318,7 @@
 
 .event-description {
     color: #666;
-    font-size: 14px;
+    font-size: 16px;
     line-height: 1.5;
     margin-bottom: 15px;
     flex-grow: 1;
@@ -380,6 +385,20 @@
     background: #ffeaea;
     color: #ff4757;
     border-color: #ffcccc;
+}
+.action-btn.success {
+    background-color: #28a745;   /* green */
+    color: white;
+    padding:12px 20px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    text-decoration: none;
+    transition: 0.2s ease;
+}
+
+.btn-success:hover {
+    background-color: #218838;   /* darker green */
 }
 
 .action-btn:hover {

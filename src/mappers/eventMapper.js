@@ -7,6 +7,7 @@ export const mapEventRequest = (form) => ({
     totalTickets: form.totalTickets,
     ticketPrice: form.ticketPrice,
     //imageUrl: form.imageUrl,
-    category:form.category
+    category:form.category,
+    organizerId:form.organizerId
     // organizerId sera ajouté côté backend grâce à UserPrincipal.
 });

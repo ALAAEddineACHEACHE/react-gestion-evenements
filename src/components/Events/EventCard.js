@@ -84,8 +84,9 @@ const EventCard = ({ event, onDelete }) => {
                     {userRole === 'ROLE_USER' && <button className="action-btn book">🎫 Book Now</button>}
                     {userRole === 'ROLE_ORGANIZER' && (
                         <>
-                            <Link to={`/events/${event.id}/edit`} className="action-btn secondary">✏️ Edit</Link>
-                            <button className="action-btn danger" onClick={handleDelete}>🗑️ Delete</button>
+                            <Link to={`/events/${event.id}/edit`} className="action-btn success">Edit</Link>
+                            <button className="action-btn danger" onClick={handleDelete}>Delete</button>
+                            {/*🗑️✏️*/}
                         </>
                     )}
                     {userRole === 'ROLE_ADMIN' && <button className="action-btn info">👁️ View Analytics</button>}

@@ -95,7 +95,8 @@ const AllEvents = () => {
             <div className="events-toolbar">
                 <div className="search-section">
                     <div className="search-wrapper">
-                        <span className="search-icon">🔍</span>
+                        <span className="search-icon"></span>
+                        {/*🔍*/}
                         <input
                             type="text"
                             placeholder="Search events..."
@@ -155,10 +156,13 @@ const AllEvents = () => {
 
                 {userRole === 'ROLE_ORGANIZER' && (
                     <div className="stat-card">
-                        <div className="stat-icon">🎯</div>
+                        <div className="stat-icon">
+                            <img src="Gevenemnts.jpg" alt="MR-Events Logo"
+                                 className="logo"/>
+                        </div>
                         <div className="stat-content">
                             <h3>
-                                {events.filter(e => e.organizerId === parseInt(localStorage.getItem('userId'))).length}
+                            {events.filter(e => e.organizerId === parseInt(localStorage.getItem('organizerId'))).length}
                             </h3>
                             <p>My Events</p>
                         </div>
