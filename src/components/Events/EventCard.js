@@ -2,7 +2,6 @@ import React, { useContext } from 'react';
 import { Link } from 'react-router-dom';
 import '../styles/events.css';
 import { AuthContext } from '../../providers/AuthProvider';
-import {IMAGE_BASE_URL} from "../services/eventService";
 
 const EventCard = ({ event, onDelete }) => {
     const { user } = useContext(AuthContext);
@@ -19,26 +18,48 @@ const EventCard = ({ event, onDelete }) => {
             onDelete(event.id);
         }
     };
+
     const getImageUrl = () => {
-        if (!event.image) {
+        if (!event.imageUrl) {
             return 'https://via.placeholder.com/400x200';
         }
 
-        // Si backend renvoie juste le nom
-        if (!event.image.startsWith('/')) {
-            return `http://localhost:8080/api/events/uploads/${event.image}`;
+        // Si l'imageUrl est déjà une URL complète
+        if (event.imageUrl.startsWith('http')) {
+            return event.imageUrl;
         }
 
-        // Si backend renvoie chemin relatif
-        return `http://localhost:8080/api${event.image}`;
+        // Si c'est un chemin relatif qui commence par /uploads/
+        if (event.imageUrl.startsWith('/uploads/')) {
+            // Deux options possibles selon votre configuration backend:
+
+            // Option 1: URL avec /api/events/uploads/
+            const url1 = `http://localhost:8080/api/events${event.imageUrl}`;
+
+            // Option 2: URL directe (si serveur de fichiers configuré différemment)
+            const url2 = `http://localhost:8080${event.imageUrl}`;
+
+            // Testez d'abord l'option 1 (la plus probable)
+            return url1;
+        }
+
+        // Si c'est juste un nom de fichier (sans le chemin)
+        if (!event.imageUrl.includes('/')) {
+            const url = `http://localhost:8080/api/events/uploads/${event.imageUrl}`;
+            return url;
+        }
+
+        // Par défaut
+        return 'https://via.placeholder.com/400x200';
     };
 
+    const imageUrl = getImageUrl();
 
     return (
         <div className="event-card">
             <div className="event-image">
                 <img
-                    src={getImageUrl()}
+                    src={imageUrl}
                     alt={event.title}
                     onError={(e) => {
                         e.target.src = 'https://via.placeholder.com/400x200';
