@@ -1,9 +1,8 @@
-// src/components/Events/CreateEvent.js
-
 import React, { useState } from 'react';
 import EventForm from './EventForm';
 import '../styles/createEvent.css';
 import useEvents from "../hooks/useEvent";
+import {IMAGE_BASE_URL} from "../services/eventService";
 
 const CreateEvent = () => {
     const [isSubmitting, setIsSubmitting] = useState(false);
@@ -32,76 +31,48 @@ const CreateEvent = () => {
         setErrorMessage('');
 
         try {
-            // 1. Créer l'événement d'abord
+            // 1. Créer l'événement
             const res = await create(form);
             const eventId = res.event.id;
 
-            // 2. Uploader l'image SI elle existe
+            // 2. Upload image si elle existe
             if (form.image && form.image instanceof File) {
                 try {
+                    console.log("Uploading image:", form.image);
                     await uploadImage(eventId, form.image);
                     console.log("Image uploaded successfully");
+
+                    // Mettre à jour la preview avec l'URL finale
+                    setEventPreview(prev => ({
+                        ...prev,
+                        imagePreview: `${IMAGE_BASE_URL}/${form.image.name}`
+
+                    }));
+
                 } catch (imageError) {
                     console.error("Image upload failed:", imageError);
-                    // Vous pouvez choisir de continuer même si l'image échoue
                 }
             }
 
             setSuccessMessage("Event created successfully!");
 
-            // Réinitialiser le formulaire
+            // Reset formulaire après 4s
             setTimeout(() => {
                 setSuccessMessage('');
                 setResetKey(prev => prev + 1);
-                // Réinitialiser aussi la preview
-                setEventPreview({
-                    imagePreview: null
-                });
+                setEventPreview({ imagePreview: null });
             }, 4000);
 
         } catch (err) {
             console.error("Create event error:", err);
-            let errorMsg = "Failed to create event!";
-
-            // Messages d'erreur plus spécifiques
-            if (err.response?.data?.message) {
-                errorMsg = err.response.data.message;
-            } else if (err.response?.data?.error) {
-                errorMsg = err.response.data.error;
-            }
-
+            let errorMsg = err.response?.data?.message || "Failed to create event!";
             setErrorMessage(errorMsg);
             setTimeout(() => setErrorMessage(''), 3000);
         } finally {
             setIsSubmitting(false);
         }
     };
-    // const handleSubmit = async (form) => {
-    //     setIsSubmitting(true);
-    //     setSuccessMessage('');
-    //     setErrorMessage('');
-    //
-    //     try {
-    //         const res = await create(form);
-    //         const eventId = res.event.id;
-    //
-    //         if (form.image) {
-    //             await uploadImage(eventId, form.image);
-    //         }
-    //
-    //         setSuccessMessage("Event created successfully!");
-    //         setTimeout(() => {
-    //             setSuccessMessage('');
-    //             setResetKey(prev => prev + 1);  // 🔥 force reset du formulaire
-    //         }, 4000);
-    //     } catch (err) {
-    //         console.error(err);
-    //         setErrorMessage("Failed to create event!");
-    //         setTimeout(() => setErrorMessage(''), 3000);
-    //     } finally {
-    //         setIsSubmitting(false);
-    //     }
-    // };
+
 
 
 
@@ -163,8 +134,8 @@ const CreateEvent = () => {
                     )}
                 </div>
             </div>
-            </div>
-            );
+        </div>
+    );
 };
 
 export default CreateEvent;

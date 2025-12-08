@@ -1,4 +1,3 @@
-// src/components/Events/EventForm.js
 import React, { useState } from 'react';
 import DateTimePicker from '../UI/DateTimePicker';
 
@@ -13,7 +12,7 @@ const EventForm = ({ onSubmit, isSubmitting,onFormChange,mode = "create"  }) => 
         totalTickets: '',
         ticketPrice: '',
         category: '',
-        image: null,
+        image: '',
         termsAccepted: false
     });
 
@@ -153,16 +152,17 @@ const EventForm = ({ onSubmit, isSubmitting,onFormChange,mode = "create"  }) => 
         // Format data for submission
         const eventData = {
             ...formData,
-            organizerId: 2, // This would come from auth context in real app
             startAt: new Date(formData.startAt).toISOString(),
             endAt: new Date(formData.endAt).toISOString(),
             totalTickets: parseInt(formData.totalTickets),
             ticketPrice: parseFloat(formData.ticketPrice),
             category: formData.category,
-            image: formData.image,
         };
 
-        onSubmit(eventData);
+        onSubmit({
+            ...eventData,
+            imageFile: formData.image // Renommer pour plus de clarté
+        });
     };
 
     const calculateDuration = () => {
@@ -439,4 +439,4 @@ const EventForm = ({ onSubmit, isSubmitting,onFormChange,mode = "create"  }) => 
     );
 };
 
-export default EventForm;
+export default EventForm; 

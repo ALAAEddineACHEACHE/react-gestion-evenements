@@ -19,28 +19,21 @@ const EventCard = ({ event, onDelete }) => {
             onDelete(event.id);
         }
     };
-
     const getImageUrl = () => {
-        // Essayez différentes propriétés possibles
-        const imageName = event.image || event.imageUrl || event.image_url;
-
-        if (!imageName) {
+        if (!event.image) {
             return 'https://via.placeholder.com/400x200';
         }
 
-        // Si c'est déjà une URL complète
-        if (imageName.startsWith('http')) {
-            return imageName;
+        // Si backend renvoie juste le nom
+        if (!event.image.startsWith('/')) {
+            return `http://localhost:8080/api/events/uploads/${event.image}`;
         }
 
-        // Si c'est un chemin complet avec /uploads/
-        if (imageName.startsWith('/')) {
-            return `http://localhost:8080${imageName}`;
-        }
-
-        // Si c'est juste un nom de fichier
-        return `${IMAGE_BASE_URL}/${imageName}`;
+        // Si backend renvoie chemin relatif
+        return `http://localhost:8080/api${event.image}`;
     };
+
+
     return (
         <div className="event-card">
             <div className="event-image">

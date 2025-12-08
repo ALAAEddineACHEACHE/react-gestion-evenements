@@ -561,39 +561,111 @@
 .preview-card {
     background: white;
     border-radius: 20px;
-    padding: 40px;
+    padding: 30px;
     box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
-    text-align: center;
+    min-height: 350px; /* Hauteur minimum */
+    display: flex;
+    flex-direction: column;
 }
 
 .preview-placeholder {
-    padding: 40px;
+    padding: 60px 40px;
     border: 2px dashed #e1e5e9;
     border-radius: 12px;
-    margin-top: 20px;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: #f8f9fa;
+    transition: all 0.3s ease;
+}
+
+.preview-placeholder:hover {
+    border-color: #667eea;
+    background: rgba(102, 126, 234, 0.05);
 }
 
 .preview-icon {
-    font-size: 48px;
+    font-size: 64px; /* Augmenté */
     display: block;
     margin-bottom: 20px;
     opacity: 0.5;
-}
-.preview-image-container {
-    width: 100%;
-    max-width: 500px;
-    height: 300px;
-    margin: 0 auto;
-    border-radius: 12px;
-    overflow: hidden;
-    background: #f1f1f1;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    animation: pulse 2s infinite;
 }
 
+@keyframes pulse {
+    0%, 100% { opacity: 0.5; }
+    50% { opacity: 0.8; }
+}
+
+.preview-placeholder p {
+    color: #666;
+    margin: 8px 0;
+    text-align: center;
+    font-size: 16px;
+}
+
+.preview-placeholder p:first-of-type {
+    font-weight: 500;
+    color: #333;
+}
+
+/* CONTAINER pour l'image - NOUVEAU */
+.preview-image-container {
+    width: 100%;
+    height: 300px; /* Hauteur fixe */
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+    margin: 0 auto;
+    position: relative;
+    background: #f1f1f1;
+}
+
+/* IMAGE elle-même - MODIFIÉ */
 .preview-image {
     width: 100%;
     height: 100%;
-    object-fit: cover;
+    object-fit: cover; /* Couvre tout le container */
+    object-position: center;
+    transition: transform 0.3s ease;
+}
+
+.preview-image:hover {
+    transform: scale(1.02);
+}
+
+/* Info sous l'image - NOUVEAU */
+.preview-info {
+    margin-top: 15px;
+    padding: 15px;
+    background: #f8f9fa;
+    border-radius: 8px;
+    text-align: left;
+}
+
+.preview-info p {
+    margin: 5px 0;
+    color: #666;
+    font-size: 14px;
+}
+
+.preview-info strong {
+    color: #333;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .preview-image-container {
+        height: 250px;
+    }
+
+    .preview-placeholder {
+        padding: 40px 20px;
+    }
+
+    .preview-icon {
+        font-size: 48px;
+    }
 }
