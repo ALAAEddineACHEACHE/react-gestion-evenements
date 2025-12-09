@@ -97,8 +97,8 @@ const EventForm = ({ onSubmit, isSubmitting,onFormChange,mode = "create"  }) => 
 
         if (!formData.description.trim()) {
             newErrors.description = 'Description is required';
-        } else if (formData.description.length < 20) {
-            newErrors.description = 'Description must be at least 20 characters';
+        } else if (formData.description.length < 10) {
+            newErrors.description = 'Description must be at least 10 characters';
         }
 
         if (!formData.location.trim()) {
@@ -119,8 +119,8 @@ const EventForm = ({ onSubmit, isSubmitting,onFormChange,mode = "create"  }) => 
             newErrors.totalTickets = 'Number of tickets is required';
         } else if (formData.totalTickets < 1) {
             newErrors.totalTickets = 'Must have at least 1 ticket';
-        } else if (formData.totalTickets > 4) {
-            newErrors.totalTickets = 'You cannot reserve more than 4 Tickets';
+        } else if (formData.totalTickets > 40000) {
+            newErrors.totalTickets = 'You cannot choose more than 40 000 Tickets';
         }
 
         if (!formData.ticketPrice) {
@@ -203,7 +203,7 @@ const EventForm = ({ onSubmit, isSubmitting,onFormChange,mode = "create"  }) => 
                                 value={formData.title}
                                 onChange={handleChange}
                                 className={`form-input ${errors.title ? 'input-error' : ''}`}
-                                placeholder="Enter event title (e.g., Tech Conference 2024)"
+                                placeholder="Event title (e.g., Tech Conference 2024)"
                             />
                             {errors.title && <span className="error-text">{errors.title}</span>}
                         </div>

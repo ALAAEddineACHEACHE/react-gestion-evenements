@@ -1,10 +1,11 @@
+// src/components/Navbar.js
 import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 
 const Navbar = () => {
     const navigate = useNavigate();
     const token = localStorage.getItem('token');
-    const role = localStorage.getItem('role'); // IMPORTANT
+    const role = localStorage.getItem('role');
 
     const handleLogout = () => {
         localStorage.removeItem('token');
@@ -36,6 +37,7 @@ const Navbar = () => {
                             {role === "ROLE_USER" && (
                                 <>
                                     <Link to="/events" className="nav-link">Events</Link>
+                                    <Link to="/payments" className="nav-link">Payment</Link>
                                 </>
                             )}
 

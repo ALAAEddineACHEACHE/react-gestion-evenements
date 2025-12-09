@@ -1,7 +1,7 @@
 // src/hooks/useReservation.js
 import { useState } from 'react';
 import axios from 'axios';
-import {mapReservationRequest} from "../../mappers/reservationMapper";
+import { mapReservationRequest } from "../../mappers/reservationMapper";
 
 const BASE_URL = "http://localhost:8080/api/reservations";
 
@@ -58,6 +58,7 @@ export default function useReservation() {
                 }
             });
 
+            console.log('User reservations:', response.data); // Log pour debug
             return response.data;
 
         } catch (err) {

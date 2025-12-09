@@ -67,7 +67,7 @@ const BookModal = ({ event, onClose, onBook }) => {
 
         } catch (err) {
             // Gestion des erreurs venant du parent
-            setError(err.message || 'Failed to create reservation');
+            setError(err.response.data.message || 'Failed to create reservation');
         } finally {
             setIsLoading(false);
         }
