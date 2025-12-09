@@ -1,11 +1,13 @@
 import React, { useContext, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { AuthContext } from '../../providers/AuthProvider';
+import ViewDetailsModal from './ViewDetailsModal'; // Importez le nouveau composant
 import '../styles/events.css';
 
 const EventCard = ({ event, onDelete, onBook }) => {
     const { user } = useContext(AuthContext);
     const userRole = localStorage.getItem('role');
+    const [showDetailsModal, setShowDetailsModal] = useState(false);
 
     // Calculer les tickets disponibles
     const ticketsAvailable = () => {
@@ -60,82 +62,104 @@ const EventCard = ({ event, onDelete, onBook }) => {
     const imageUrl = getImageUrl();
 
     return (
-        <div className="event-card">
-            <div className="event-image">
-                <img
-                    src={imageUrl}
-                    alt={event.title}
-                    onError={(e) => {
-                        e.target.src = 'https://via.placeholder.com/400x200';
-                    }}
-                />
-                <span className="event-category">{event.category || 'General'}</span>
-                {/* Badge pour tickets disponibles */}
-                {userRole === 'ROLE_USER' && (
-                    <div className="ticket-availability-badge">
-                        {hasAvailableTickets ? (
-                            <span className="available">🎟️ {ticketsAvailable()} available</span>
-                        ) : (
-                            <span className="sold-out">Sold Out</span>
-                        )}
-                    </div>
-                )}
-            </div>
+        <>
+            <div className="event-card">
+                <div className="event-image">
+                    <img
+                        src={imageUrl}
+                        alt={event.title}
+                        onError={(e) => {
+                            e.target.src = 'https://via.placeholder.com/400x200';
+                        }}
+                    />
+                    <span className="event-category">{event.category || 'General'}</span>
+                    {/* Badge pour tickets disponibles */}
+                    {userRole === 'ROLE_USER' && (
+                        <div className="ticket-availability-badge">
+                            {hasAvailableTickets ? (
+                                <span className="available">🎟️ {ticketsAvailable()} available</span>
+                            ) : (
+                                <span className="sold-out">Sold Out</span>
+                            )}
+                        </div>
+                    )}
+                </div>
 
-            <div className="event-content">
-                <h3>{event.title}</h3>
-                <p className="event-description">
-                    {event.description?.substring(0, 100)}...
-                </p>
+                <div className="event-content">
+                    <h3>{event.title}</h3>
+                    <p className="event-description">
+                        {event.description?.substring(0, 100)}...
+                    </p>
 
-                <div className="event-details">
-                    <div className="detail-item"><span>📍</span>{event.location}</div>
-                    <div className="detail-item"><span>📅</span>{formatDate(event.startAt)}</div>
-                    <div className="detail-item"><span>⏰</span>{formatTime(event.startAt)}</div>
-                    <div className="detail-item">
-                        <span>🎟️</span>
-                        <div className="ticket-info">
-                            <div className="ticket-total">{event.totalTickets || 0} total</div>
-                            <div className="ticket-sold">{(event.ticketsSold || 0)} sold</div>
+                    <div className="event-details">
+                        <div className="detail-item"><span>📍</span>{event.location}</div>
+                        <div className="detail-item"><span>📅</span>{formatDate(event.startAt)}</div>
+                        <div className="detail-item"><span>⏰</span>{formatTime(event.startAt)}</div>
+                        <div className="detail-item">
+                            <span>🎟️</span>
+                            <div className="ticket-info">
+                                <div className="ticket-total">{event.totalTickets || 0} total</div>
+                                <div className="ticket-sold">{(event.ticketsSold || 0)} sold</div>
+                            </div>
                         </div>
                     </div>
-                </div>
 
-                <div className="event-actions">
-                    <Link to={`/events/${event.id}`} className="action-btn primary">
-                        View Details
-                    </Link>
-
-                    {userRole === 'ROLE_USER' && (
+                    <div className="event-actions">
+                        {/* Remplacez le Link par un bouton qui ouvre la modal */}
                         <button
-                            className={`action-btn book ${!hasAvailableTickets ? 'disabled' : ''}`}
-                            onClick={() => hasAvailableTickets && onBook && onBook(event)}
-                            disabled={!hasAvailableTickets}
-                            title={!hasAvailableTickets ? "No tickets available" : "Book tickets"}
+                            className="action-btn primary view-details-btn"
+                            onClick={() => setShowDetailsModal(true)}
                         >
-                            {hasAvailableTickets ? '🎫 Book Now' : 'Sold Out'}
+                            👁️ View Details
                         </button>
-                    )}
 
-                    {userRole === 'ROLE_ORGANIZER' && (
-                        <>
-                            <Link to={`/events/${event.id}/edit`} className="action-btn success">
-                                Edit
-                            </Link>
-                            <button className="action-btn danger" onClick={handleDelete}>
-                                Delete
+                        {userRole === 'ROLE_USER' && (
+                            <button
+                                className={`action-btn book ${!hasAvailableTickets ? 'disabled' : ''}`}
+                                onClick={() => hasAvailableTickets && onBook && onBook(event)}
+                                disabled={!hasAvailableTickets}
+                                title={!hasAvailableTickets ? "No tickets available" : "Book tickets"}
+                            >
+                                {hasAvailableTickets ? '🎫 Book Now' : 'Sold Out'}
                             </button>
-                        </>
-                    )}
+                        )}
 
-                    {userRole === 'ROLE_ADMIN' && (
-                        <button className="action-btn info">
-                            👁️ View Analytics
-                        </button>
-                    )}
+                        {userRole === 'ROLE_ORGANIZER' && (
+                            <>
+                                <Link to={`/events/${event.id}/edit`} className="action-btn success">
+                                    Edit
+                                </Link>
+                                <button className="action-btn danger" onClick={handleDelete}>
+                                    Delete
+                                </button>
+                            </>
+                        )}
+
+                        {userRole === 'ROLE_ADMIN' && (
+                            <button className="action-btn info">
+                                📊 View Analytics
+                            </button>
+                        )}
+                    </div>
                 </div>
             </div>
-        </div>
+
+            {/* Modal View Details */}
+            {showDetailsModal && (
+                <ViewDetailsModal
+                    event={event}
+                    onClose={() => setShowDetailsModal(false)}
+                    onBook={() => {
+                        setShowDetailsModal(false);
+                        if (hasAvailableTickets && onBook) {
+                            onBook(event);
+                        }
+                    }}
+                    hasAvailableTickets={hasAvailableTickets}
+                    userRole={userRole}
+                />
+            )}
+        </>
     );
 };
 

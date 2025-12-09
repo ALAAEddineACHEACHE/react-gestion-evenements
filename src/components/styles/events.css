@@ -557,3 +557,481 @@
     transform: none;
     box-shadow: none;
 }
+/* View Details Modal Styles */
+.details-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.8);
+    backdrop-filter: blur(10px);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 10000;
+    padding: 20px;
+    animation: fadeIn 0.3s ease;
+}
+
+.details-modal {
+    background: white;
+    border-radius: 24px;
+    width: 100%;
+    max-width: 800px;
+    max-height: 90vh;
+    overflow-y: auto;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+    animation: slideUp 0.4s ease;
+}
+
+.details-modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 30px 30px 20px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border-radius: 24px 24px 0 0;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+
+.details-modal-header h2 {
+    font-size: 28px;
+    font-weight: 700;
+    margin-bottom: 8px;
+}
+
+.details-modal-header p {
+    opacity: 0.9;
+    font-size: 16px;
+    margin: 0;
+}
+
+.modal-close-btn {
+    background: rgba(255, 255, 255, 0.2);
+    border: none;
+    color: white;
+    font-size: 28px;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+}
+
+.modal-close-btn:hover {
+    background: rgba(255, 255, 255, 0.3);
+    transform: rotate(90deg);
+}
+
+/* Hero Image */
+.details-hero-image {
+    position: relative;
+    height: 300px;
+    overflow: hidden;
+    border-radius: 0 0 20px 20px;
+}
+
+.details-hero-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.hero-overlay {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    align-items: flex-end;
+}
+
+.hero-badge {
+    padding: 8px 16px;
+    border-radius: 20px;
+    font-size: 14px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.category-badge {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+}
+
+.availability-badge {
+    color: white;
+    font-weight: 700;
+}
+
+.availability-badge.available {
+    background: rgba(46, 204, 113, 0.95);
+}
+
+.availability-badge.sold-out {
+    background: rgba(231, 76, 60, 0.95);
+}
+
+/* Main Content */
+.details-main-content {
+    padding: 30px;
+}
+
+.details-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 25px;
+    flex-wrap: wrap;
+    gap: 20px;
+}
+
+.details-header h1 {
+    font-size: 32px;
+    font-weight: 800;
+    color: #1a202c;
+    margin: 0;
+    flex: 1;
+    min-width: 300px;
+}
+
+.price-display {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 15px 25px;
+    border-radius: 15px;
+    text-align: center;
+    min-width: 150px;
+}
+
+.price-amount {
+    display: block;
+    font-size: 36px;
+    font-weight: 800;
+    line-height: 1;
+    margin-bottom: 5px;
+}
+
+.price-label {
+    font-size: 14px;
+    opacity: 0.9;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.full-description {
+    font-size: 16px;
+    line-height: 1.7;
+    color: #4a5568;
+    margin-bottom: 30px;
+    padding: 20px;
+    background: #f8f9fa;
+    border-radius: 12px;
+    border-left: 4px solid #667eea;
+}
+
+/* Info Grid */
+.details-info-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 20px;
+    margin-bottom: 30px;
+}
+
+.info-card {
+    background: white;
+    border-radius: 15px;
+    padding: 20px;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+    border: 1px solid #e1e5e9;
+    transition: all 0.3s ease;
+}
+
+.info-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 25px rgba(102, 126, 234, 0.15);
+    border-color: #667eea;
+}
+
+.info-icon {
+    width: 50px;
+    height: 50px;
+    background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%);
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    color: #667eea;
+    flex-shrink: 0;
+}
+
+.info-content {
+    flex: 1;
+}
+
+.info-label {
+    font-size: 12px;
+    color: #718096;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 5px;
+}
+
+.info-value {
+    font-size: 16px;
+    font-weight: 700;
+    color: #2d3748;
+}
+
+.time-value {
+    font-size: 14px;
+    color: #667eea;
+    font-weight: 600;
+    margin-top: 3px;
+}
+
+.capacity-info {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+}
+
+.capacity-info span {
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.capacity-info .total {
+    color: #2d3748;
+}
+
+.capacity-info .sold {
+    color: #718096;
+}
+
+.capacity-info .available {
+    font-weight: 700;
+}
+
+.text-success {
+    color: #38a169;
+}
+
+.text-danger {
+    color: #e53e3e;
+}
+
+/* Additional Info */
+.additional-info {
+    margin-top: 30px;
+    padding: 20px;
+    background: #f8f9fa;
+    border-radius: 12px;
+}
+
+.additional-info h3 {
+    font-size: 18px;
+    font-weight: 700;
+    color: #333;
+    margin-bottom: 15px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.organizer-info {
+    background: white;
+    padding: 15px;
+    border-radius: 8px;
+    margin-bottom: 15px;
+    border-left: 4px solid #667eea;
+}
+
+/* Actions */
+.details-modal-actions {
+    display: flex;
+    gap: 15px;
+    padding: 30px;
+    border-top: 1px solid #e1e5e9;
+    background: #f8f9fa;
+    border-radius: 0 0 24px 24px;
+}
+
+.details-modal-actions button {
+    flex: 1;
+    padding: 16px 24px;
+    border-radius: 12px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    border: 2px solid transparent;
+}
+
+.secondary-btn {
+    background: white;
+    color: #667eea;
+    border-color: #e1e5e9;
+}
+
+.secondary-btn:hover {
+    background: #f8f9fa;
+    border-color: #667eea;
+    transform: translateY(-2px);
+}
+
+.primary-btn {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+}
+
+.primary-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+}
+
+.book-now-btn {
+    background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+    box-shadow: 0 4px 15px rgba(40, 167, 69, 0.3);
+}
+
+.book-now-btn:hover {
+    box-shadow: 0 8px 25px rgba(40, 167, 69, 0.4);
+}
+
+.disabled-btn {
+    background: #b2bec3;
+    color: white;
+    cursor: not-allowed;
+    opacity: 0.7;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .details-modal {
+        max-height: 95vh;
+    }
+
+    .details-hero-image {
+        height: 200px;
+    }
+
+    .details-header {
+        flex-direction: column;
+    }
+
+    .details-header h1 {
+        min-width: auto;
+        font-size: 28px;
+    }
+
+    .details-info-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .details-modal-actions {
+        flex-direction: column;
+    }
+
+    .price-display {
+        align-self: flex-start;
+    }
+}
+
+@media (max-width: 576px) {
+    .details-modal-header {
+        padding: 20px;
+        flex-direction: column;
+        gap: 15px;
+        text-align: center;
+    }
+
+    .modal-close-btn {
+        position: absolute;
+        top: 15px;
+        right: 15px;
+    }
+
+    .details-main-content {
+        padding: 20px;
+    }
+
+    .full-description {
+        padding: 15px;
+        font-size: 15px;
+    }
+}
+
+/* Animation pour le bouton View Details */
+.view-details-btn {
+    position: relative;
+    overflow: hidden;
+}
+
+.view-details-btn::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 5px;
+    height: 5px;
+    background: rgba(255, 255, 255, 0.5);
+    opacity: 0;
+    border-radius: 100%;
+    transform: scale(1, 1) translate(-50%);
+    transform-origin: 50% 50%;
+}
+
+.view-details-btn:focus:not(:active)::after {
+    animation: ripple 1s ease-out;
+}
+
+@keyframes ripple {
+    0% {
+        transform: scale(0, 0);
+        opacity: 0.5;
+    }
+    20% {
+        transform: scale(25, 25);
+        opacity: 0.3;
+    }
+    100% {
+        opacity: 0;
+        transform: scale(40, 40);
+    }
+}
+
+/* Styles pour le bouton View Details dans la carte */
+.action-btn.primary.view-details-btn {
+    background: linear-gradient(135deg, #4d7fff 0%, #3366ff 100%);
+    border: none;
+    color: white;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.action-btn.primary.view-details-btn:hover {
+    background: linear-gradient(135deg, #3366ff 0%, #1a4dff 100%);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(51, 102, 255, 0.3);
+}
