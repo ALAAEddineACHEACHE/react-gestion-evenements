@@ -5,6 +5,8 @@ import EventCard from './EventCard';
 import '../styles/events.css';
 import { Link } from "react-router-dom";
 import useEvents from "../hooks/useEvent";
+import useReservation from "../hooks/useReservation";
+import BookModal from "../Reservation/BookModal";
 
 const AllEvents = () => {
     const [events, setEvents] = useState([]);
@@ -13,9 +15,55 @@ const AllEvents = () => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
     const userRole = localStorage.getItem('role');
+    const { createReservation } = useReservation();
     const { deleteEventById, getAllEvents } = useEvents();
     const [showConfirm, setShowConfirm] = useState(false);
     const [eventToDelete, setEventToDelete] = useState(null);
+    const [selectedEvent, setSelectedEvent] = useState(null);
+    const [showBookModal, setShowBookModal] = useState(false);
+    const handleOpenBookModal = (event) => {
+        setSelectedEvent(event);
+        setShowBookModal(true);
+    };
+
+    const handleCloseBookModal = () => {
+        setSelectedEvent(null);
+        setShowBookModal(false);
+    };
+    const handleBook = async (reservationData) => {
+        try {
+            const result = await createReservation(reservationData);
+
+            // Mettre à jour les tickets disponibles
+            setEvents(prevEvents =>
+                prevEvents.map(event =>
+                    event.id === reservationData.eventId
+                        ? {
+                            ...event,
+                            totalTickets: event.totalTickets - reservationData.quantity
+                        }
+                        : event
+                )
+            );
+
+            // Fermer le modal
+            handleCloseBookModal();
+
+            // Afficher la notification
+            const notification = document.querySelector('.reservation-notification');
+            if (notification) {
+                notification.classList.add('show');
+                setTimeout(() => {
+                    notification.classList.remove('show');
+                }, 5000);
+            }
+
+            return result;
+        } catch (error) {
+            console.error('Booking failed:', error);
+            throw error;
+        }
+    };
 
     const fetchEvents = async () => {
         try {
@@ -128,6 +176,8 @@ const AllEvents = () => {
                             key={event.id}
                             event={event}
                             onDelete={handleDelete}
+                            onBook={() => handleOpenBookModal(event)} // Modifiez ici
+
                         />
                     ))
                 ) : (
@@ -177,7 +227,36 @@ const AllEvents = () => {
                     </div>
                 </div>
             </div>
+            <div className="reservation-notification">
+                <div className="notification-icon">
+                    ✓
+                </div>
+                <div className="notification-content">
+                    <h4>Réservation créée avec succès !</h4>
+                    <p>Votre billet pour l'événement a été réservé.</p>
+                </div>
+                <button
+                    className="notification-close"
+                    onClick={() => {
+                        const notification = document.querySelector('.reservation-notification');
+                        if (notification) {
+                            notification.classList.remove('show');
+                        }
+                    }}
+                >
+                    ×
+                </button>
+            </div>
+            {showBookModal && selectedEvent && (
+                <BookModal
+                    event={selectedEvent}
+                    onClose={handleCloseBookModal}
+                    onBook={handleBook} // Utilisez le vrai onBook
+                />
+            )}
+
         </div>
+
     );
 };
 
