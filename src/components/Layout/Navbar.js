@@ -1,6 +1,6 @@
 // src/components/Navbar.js
 import React from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import {Link, useLocation, useNavigate} from 'react-router-dom';
 
 const Navbar = () => {
     const navigate = useNavigate();
@@ -14,6 +14,14 @@ const Navbar = () => {
         navigate('/login');
         window.location.reload();
     };
+    const location = useLocation();
+    const isNotFoundPage = location.pathname.includes('404') ||
+        (!location.pathname.match(/^\/(login|register|verify|forgot-password|events|dashboard|create-event|payments)$/) &&
+            !location.pathname.match(/^\/events\/[^/]+\/edit$/));
+
+    if (isNotFoundPage) {
+        return null; // Ne pas afficher la navbar sur la page 404
+    }
 
     return (
         <nav className="navbar">

@@ -16,6 +16,7 @@ import ProtectedAdminRoute from "./components/ProtectedAdminRoute";
 import ProtectedOrganizerRoute from "./components/ProtectedOrganizerRoute";
 import ProtectedUserRoute from "./components/ProtectedUserRoute";
 import PaymentPage from "./pages/PaymentPage";
+import NotFoundPage from "./components/NotFound/NotFoundPage";
 
 function App() {
   const isAuthenticated = localStorage.getItem('token');
@@ -59,8 +60,9 @@ function App() {
               } />
 
               {/* Route fallback */}
-              <Route path="*" element={<Navigate to={isAuthenticated ? "/events" : "/login"} />} />
+              {/*<Route path="*" element={<Navigate to={isAuthenticated ? "/events" : "/login"} />} />*/}
               <Route path="/payments" element={<PaymentPage />} />
+              <Route path="*" element={<NotFoundPage />} />
 
             </Routes>
           </div>
