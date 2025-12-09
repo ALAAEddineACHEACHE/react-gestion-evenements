@@ -1,4 +1,3 @@
-// src/mappers/paymentMapper.js
 export const mapPaymentRequest = (form) => ({
     reservationId: form.reservationId,
     method: form.method || "CARD",

@@ -583,3 +583,200 @@
     background: rgba(255, 255, 255, 0.3);
     transform: rotate(90deg);
 }
+/* Dans reservation.css */
+.sold-out-badge {
+    background: #ff4757;
+    color: white;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 11px;
+    font-weight: 700;
+    margin-left: 10px;
+    text-transform: uppercase;
+}
+/* Ajouter ces styles à la fin du fichier reservation.css */
+
+/* Event Header Styles */
+.event-summary {
+    padding: 25px 30px;
+    background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+    border-bottom: 1px solid #e1e5e9;
+}
+
+.event-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 25px;
+}
+
+.event-title {
+    font-size: 22px;
+    font-weight: 800;
+    color: #1a202c;
+    margin: 0;
+    line-height: 1.3;
+    max-width: 70%;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.event-price-badge {
+    background: white;
+    border-radius: 12px;
+    padding: 12px 20px;
+    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.15);
+    border: 2px solid rgba(102, 126, 234, 0.2);
+    text-align: center;
+    min-width: 120px;
+}
+
+.price-tag {
+    display: block;
+    font-size: 28px;
+    font-weight: 800;
+    color: #667eea;
+    line-height: 1;
+    margin-bottom: 4px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.price-label {
+    font-size: 12px;
+    color: #718096;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+/* Event Details Grid */
+.event-details-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 15px;
+    margin-top: 20px;
+}
+
+.detail-card {
+    background: white;
+    border-radius: 15px;
+    padding: 20px;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    border: 1px solid #e1e5e9;
+    transition: all 0.3s ease;
+}
+
+.detail-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 20px rgba(102, 126, 234, 0.1);
+    border-color: #667eea;
+}
+
+.detail-icon-wrapper {
+    width: 50px;
+    height: 50px;
+    background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%);
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.detail-icon {
+    font-size: 22px;
+    color: #667eea;
+}
+
+.detail-content {
+    flex: 1;
+}
+
+.detail-label {
+    font-size: 12px;
+    color: #718096;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 5px;
+}
+
+.detail-value {
+    font-size: 15px;
+    font-weight: 700;
+    color: #2d3748;
+    line-height: 1.4;
+}
+
+.detail-time {
+    font-size: 13px;
+    color: #667eea;
+    font-weight: 600;
+    margin-top: 2px;
+}
+
+.availability-status {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-weight: 700;
+    font-size: 14px;
+}
+
+.availability-status.available {
+    color: #38a169;
+}
+
+.availability-status.sold-out {
+    color: #e53e3e;
+}
+
+.availability-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #38a169;
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+    0% {
+        opacity: 1;
+        transform: scale(1);
+    }
+    50% {
+        opacity: 0.5;
+        transform: scale(1.1);
+    }
+    100% {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+/* Responsive adjustments for event details */
+@media (max-width: 576px) {
+    .event-header {
+        flex-direction: column;
+        gap: 15px;
+    }
+
+    .event-title {
+        max-width: 100%;
+        font-size: 20px;
+    }
+
+    .event-price-badge {
+        align-self: flex-start;
+    }
+
+    .event-details-grid {
+        grid-template-columns: 1fr;
+    }
+}

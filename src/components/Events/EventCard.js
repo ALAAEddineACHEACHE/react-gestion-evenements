@@ -3,9 +3,18 @@ import { Link } from 'react-router-dom';
 import { AuthContext } from '../../providers/AuthProvider';
 import '../styles/events.css';
 
-const EventCard = ({ event, onDelete,onBook }) => {
+const EventCard = ({ event, onDelete, onBook }) => {
     const { user } = useContext(AuthContext);
     const userRole = localStorage.getItem('role');
+
+    // Calculer les tickets disponibles
+    const ticketsAvailable = () => {
+        const totalTickets = event.totalTickets || 0;
+        const ticketsSold = event.ticketsSold || 0;
+        return totalTickets - ticketsSold;
+    };
+
+    const hasAvailableTickets = ticketsAvailable() > 0;
 
     const formatDate = (dateString) =>
         new Date(dateString).toLocaleDateString('en-US', {
@@ -61,6 +70,16 @@ const EventCard = ({ event, onDelete,onBook }) => {
                     }}
                 />
                 <span className="event-category">{event.category || 'General'}</span>
+                {/* Badge pour tickets disponibles */}
+                {userRole === 'ROLE_USER' && (
+                    <div className="ticket-availability-badge">
+                        {hasAvailableTickets ? (
+                            <span className="available">🎟️ {ticketsAvailable()} available</span>
+                        ) : (
+                            <span className="sold-out">Sold Out</span>
+                        )}
+                    </div>
+                )}
             </div>
 
             <div className="event-content">
@@ -73,19 +92,28 @@ const EventCard = ({ event, onDelete,onBook }) => {
                     <div className="detail-item"><span>📍</span>{event.location}</div>
                     <div className="detail-item"><span>📅</span>{formatDate(event.startAt)}</div>
                     <div className="detail-item"><span>⏰</span>{formatTime(event.startAt)}</div>
-                    <div className="detail-item"><span>🎟️</span>{event.totalTickets || 0} tickets</div>
+                    <div className="detail-item">
+                        <span>🎟️</span>
+                        <div className="ticket-info">
+                            <div className="ticket-total">{event.totalTickets || 0} total</div>
+                            <div className="ticket-sold">{(event.ticketsSold || 0)} sold</div>
+                        </div>
+                    </div>
                 </div>
 
                 <div className="event-actions">
-                    <button className="action-btn primary">View Details</button>
+                    <Link to={`/events/${event.id}`} className="action-btn primary">
+                        View Details
+                    </Link>
 
                     {userRole === 'ROLE_USER' && (
                         <button
-                            className="action-btn book"
-                            onClick={() => onBook && onBook(event)} // Utilisez la prop onBook
-                            disabled={!event.totalTickets || event.totalTickets <= 0}
+                            className={`action-btn book ${!hasAvailableTickets ? 'disabled' : ''}`}
+                            onClick={() => hasAvailableTickets && onBook && onBook(event)}
+                            disabled={!hasAvailableTickets}
+                            title={!hasAvailableTickets ? "No tickets available" : "Book tickets"}
                         >
-                            🎫 Book Now
+                            {hasAvailableTickets ? '🎫 Book Now' : 'Sold Out'}
                         </button>
                     )}
 

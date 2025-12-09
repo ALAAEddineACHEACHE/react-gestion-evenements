@@ -32,18 +32,30 @@ const AllEvents = () => {
     };
     const handleBook = async (reservationData) => {
         try {
-            const result = await createReservation(reservationData);
+            console.log('Booking with data:', reservationData);
 
-            // Mettre à jour les tickets disponibles
+            if (!createReservation) {
+                throw new Error('Reservation service not available');
+            }
+
+            const result = await createReservation(reservationData);
+            console.log('Reservation created successfully:', result);
+
+            // Mettre à jour les tickets disponibles CORRECTEMENT
             setEvents(prevEvents =>
-                prevEvents.map(event =>
-                    event.id === reservationData.eventId
-                        ? {
+                prevEvents.map(event => {
+                    if (event.id === reservationData.eventId) {
+                        const newTicketsSold = (event.ticketsSold || 0) + reservationData.quantity;
+                        const ticketsRemaining = (event.totalTickets || 0) - newTicketsSold;
+
+                        return {
                             ...event,
-                            totalTickets: event.totalTickets - reservationData.quantity
-                        }
-                        : event
-                )
+                            ticketsSold: newTicketsSold,
+                            ticketsRemaining: ticketsRemaining
+                        };
+                    }
+                    return event;
+                })
             );
 
             // Fermer le modal
@@ -58,18 +70,30 @@ const AllEvents = () => {
                 }, 5000);
             }
 
+            // Optionnel : Recharger les événements depuis le serveur
+            // await fetchEvents();
+
             return result;
         } catch (error) {
             console.error('Booking failed:', error);
-            throw error;
+            throw {
+                message: error.response?.data?.message || error.message,
+                response: error.response
+            };
         }
     };
-
     const fetchEvents = async () => {
         try {
             setLoading(true);
             const data = await getAllEvents();
-            setEvents(data);
+
+            // Formater les événements avec ticketsRemaining
+            const formattedEvents = data.map(event => ({
+                ...event,
+                ticketsRemaining: (event.totalTickets || 0) - (event.ticketsSold || 0)
+            }));
+
+            setEvents(formattedEvents);
         } catch (err) {
             setError('Failed to load events');
             console.error(err);
@@ -77,7 +101,6 @@ const AllEvents = () => {
             setLoading(false);
         }
     };
-
     useEffect(() => {
         fetchEvents();
     }, []);

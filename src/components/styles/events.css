@@ -471,3 +471,89 @@
         font-size: 28px;
     }
 }
+/* styles/events.css - Ajoutez ces styles */
+
+/* Badge de disponibilité des tickets */
+.ticket-availability-badge {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    z-index: 2;
+}
+
+.ticket-availability-badge .available {
+    background: rgba(46, 204, 113, 0.9);
+    color: white;
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    box-shadow: 0 4px 12px rgba(46, 204, 113, 0.3);
+}
+
+.ticket-availability-badge .sold-out {
+    background: rgba(231, 76, 60, 0.9);
+    color: white;
+    padding: 6px 15px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 700;
+    box-shadow: 0 4px 12px rgba(231, 76, 60, 0.3);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+/* Informations sur les tickets */
+.ticket-info {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+}
+
+.ticket-total {
+    font-size: 13px;
+    color: #2d3436;
+    font-weight: 500;
+}
+
+.ticket-sold {
+    font-size: 12px;
+    color: #636e72;
+}
+
+/* Bouton Book désactivé */
+.action-btn.book.disabled {
+    background: #b2bec3;
+    color: #636e72;
+    cursor: not-allowed;
+    opacity: 0.7;
+    border: 2px solid #dfe6e9;
+}
+
+.action-btn.book.disabled:hover {
+    background: #b2bec3;
+    transform: none;
+    box-shadow: none;
+}
+
+.action-btn.book.disabled:active {
+    transform: none;
+}
+
+/* Style pour le bouton sold out */
+.action-btn.book:disabled {
+    background: linear-gradient(135deg, #b2bec3 0%, #636e72 100%);
+    color: white;
+    cursor: not-allowed;
+    border: 2px solid #dfe6e9;
+    opacity: 0.8;
+}
+
+.action-btn.book:disabled:hover {
+    background: linear-gradient(135deg, #b2bec3 0%, #636e72 100%);
+    transform: none;
+    box-shadow: none;
+}

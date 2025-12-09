@@ -1,7 +1,5 @@
-// src/hooks/useReservation.js
 import { useState } from 'react';
 import axios from 'axios';
-import { mapReservationRequest } from "../../mappers/reservationMapper";
 
 const BASE_URL = "http://localhost:8080/api/reservations";
 
@@ -9,6 +7,7 @@ export default function useReservation() {
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState(null);
 
+    // Fonction pour créer une réservation
     const createReservation = async (reservationData) => {
         setIsLoading(true);
         setError(null);
@@ -19,29 +18,32 @@ export default function useReservation() {
                 throw new Error('Authentication required');
             }
 
-            const request = mapReservationRequest(reservationData);
-
-            console.log('Creating reservation:', request);
-
-            const response = await axios.post(`${BASE_URL}/reserve`, request, {
+            const response = await axios.post(`${BASE_URL}/reserve`, reservationData, {
                 headers: {
                     'Authorization': `Bearer ${token}`,
                     'Content-Type': 'application/json'
                 }
             });
 
-            console.log('Reservation response:', response.data);
+            console.log('Reservation API response:', response.data);
             return response.data;
 
         } catch (err) {
-            console.error('Reservation error:', err);
-            setError(err.response?.data?.message || err.message || 'Failed to create reservation');
+            console.error('Create reservation error:', err);
+
+            const errorMessage = err.response?.data?.message ||
+                err.response?.data?.error ||
+                err.message ||
+                'Failed to create reservation';
+
+            setError(errorMessage);
             throw err;
         } finally {
             setIsLoading(false);
         }
     };
 
+    // Fonction pour récupérer les réservations de l'utilisateur
     const getUserReservations = async () => {
         setIsLoading(true);
         setError(null);
@@ -52,18 +54,25 @@ export default function useReservation() {
                 throw new Error('Authentication required');
             }
 
-            const response = await axios.get(`${BASE_URL}/user`, {
+            const response = await axios.get(`${BASE_URL}/my-reservations`, {
                 headers: {
                     'Authorization': `Bearer ${token}`
                 }
             });
 
-            console.log('User reservations:', response.data); // Log pour debug
-            return response.data;
+            // Votre backend retourne { success: true, reservations: [...] }
+            if (response.data.success && Array.isArray(response.data.reservations)) {
+                return {
+                    success: true,
+                    reservations: response.data.reservations
+                };
+            } else {
+                throw new Error('Invalid response format from server');
+            }
 
         } catch (err) {
-            console.error('Get reservations error:', err);
-            setError(err.response?.data?.message || err.message || 'Failed to fetch reservations');
+            const errorMessage = err.response?.data?.message || err.message || 'Failed to fetch reservations';
+            setError(errorMessage);
             throw err;
         } finally {
             setIsLoading(false);

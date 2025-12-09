@@ -31,9 +31,26 @@ const PaymentPage = () => {
     const [warningMessage, setWarningMessage] = useState('');
     const [infoMessage, setInfoMessage] = useState('');
 
+    // Dans PaymentPage.js - corrigez le useEffect
+    useEffect(() => {
+        console.log('Current reservations state:', reservations);
+        console.log('Selected reservation:', selectedReservation);
+        // NE PAS appeler loadUserReservations ici si vous avez déjà un autre useEffect
+    }, [reservations, selectedReservation]);
+// Nettoyer le modal après paiement réussi
+    useEffect(() => {
+        if (paymentResult && paymentResult.success) {
+            // Fermer le modal de suppression s'il est ouvert
+            if (showDeleteModal) {
+                setShowDeleteModal(false);
+                setReservationToDelete(null);
+            }
+        }
+    }, [paymentResult, showDeleteModal]);
+// Séparez les effets
     useEffect(() => {
         loadUserReservations();
-    }, []);
+    }, []); // Seulement au montage
 
     // Fonction pour afficher un message temporaire
     const showTemporaryMessage = (type, message, duration = 5000) => {
@@ -57,6 +74,7 @@ const PaymentPage = () => {
         }
     };
 
+// Dans PaymentPage.js - modifiez loadUserReservations
     const loadUserReservations = async () => {
         try {
             setLoadingReservations(true);
@@ -64,23 +82,40 @@ const PaymentPage = () => {
             console.log('Loaded reservations response:', response);
 
             const reservationsArray = response.reservations || [];
-            console.log('Reservations array:', reservationsArray);
 
-            const formattedReservations = reservationsArray.map(reservation => ({
-                id: reservation.id,
-                eventTitle: reservation.event?.title || 'Event',
-                quantity: reservation.quantity,
-                ticketPrice: reservation.event?.ticketPrice || 0,
-                totalAmount: reservation.quantity * (reservation.event?.ticketPrice || 0),
-                status: reservation.status || 'PENDING',
-                createdAt: reservation.createdAt || new Date().toISOString(),
-                eventId: reservation.eventId,
-                event: reservation.event,
-                payment: reservation.payment
-            }));
+            const formattedReservations = reservationsArray.map(reservation => {
+                let eventData = reservation.event;
+                if (!eventData || !eventData.title) {
+                    eventData = {
+                        title: `Event #${reservation.eventId || 'Unknown'}`,
+                        ticketPrice: reservation.totalAmount / (reservation.quantity || 1),
+                        description: 'Event details not available',
+                        location: 'Unknown',
+                        imageUrl: null,
+                        category: 'Unknown'
+                    };
+                }
 
+                return {
+                    id: reservation.id,
+                    eventTitle: eventData.title,
+                    quantity: reservation.quantity || 1,
+                    ticketPrice: eventData.ticketPrice || 0,
+                    totalAmount: reservation.totalAmount || (reservation.quantity * (eventData.ticketPrice || 0)),
+                    status: reservation.status || 'PENDING',
+                    createdAt: reservation.reservedAt || reservation.createdAt || new Date().toISOString(),
+                    eventId: reservation.eventId,
+                    event: eventData,
+                    payment: reservation.payment,
+                    isPaid: reservation.status === 'PAID' || (reservation.payment && reservation.payment.status === 'SUCCESS')
+                };
+            });
+
+            console.log('All formatted reservations:', formattedReservations);
+
+            // Filtrez les réservations PENDING (non payées)
             const unpaidReservations = formattedReservations.filter(
-                reservation => !reservation.payment && reservation.status !== 'PAID'
+                reservation => reservation.status === 'PENDING'
             );
 
             console.log('Unpaid reservations:', unpaidReservations);
@@ -95,12 +130,12 @@ const PaymentPage = () => {
         } catch (err) {
             console.error('Failed to load reservations:', err);
             setReservations([]);
+            setSelectedReservation(null);
             showTemporaryMessage('error', 'Failed to load your reservations. Please try again.');
         } finally {
             setLoadingReservations(false);
         }
     };
-
     const handleDeleteReservation = async (reservationId) => {
         if (!reservationId) return;
 
@@ -212,14 +247,16 @@ const PaymentPage = () => {
             const result = await processPayment(paymentData);
             console.log('Payment result:', result);
 
-            // Afficher un message de succès magnifique
+            // Afficher un message de succès
             showTemporaryMessage('success',
                 `Payment successful! 💰 $${selectedReservation.totalAmount.toFixed(2)} paid for ${selectedReservation.eventTitle}`,
-                8000
+                5000
             );
 
+            // Recharger les réservations
             await loadUserReservations();
 
+            // Réinitialiser le formulaire
             setFormData({
                 cardNumber: '',
                 cardHolder: '',
@@ -228,6 +265,12 @@ const PaymentPage = () => {
                 method: 'CARD'
             });
 
+            // Fermer automatiquement le modal de suppression s'il est ouvert
+            if (showDeleteModal) {
+                setShowDeleteModal(false);
+                setReservationToDelete(null);
+            }
+
         } catch (err) {
             console.error('Payment error:', err);
             showTemporaryMessage('error',
@@ -235,7 +278,6 @@ const PaymentPage = () => {
             );
         }
     };
-
     const validateForm = () => {
         const errors = [];
 

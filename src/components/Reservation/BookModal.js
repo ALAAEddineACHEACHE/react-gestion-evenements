@@ -1,4 +1,3 @@
-// src/components/Reservation/BookModal.js
 import React, { useState } from 'react';
 import '../styles/reservation.css';
 
@@ -8,20 +7,28 @@ const BookModal = ({ event, onClose, onBook }) => {
     const [error, setError] = useState('');
     const [success, setSuccess] = useState('');
 
-    const availableTickets = event.totalTickets || event.availableTickets || 0;
     const ticketPrice = event.ticketPrice || 0;
     const totalPrice = (ticketPrice * quantity).toFixed(2);
 
+    // Calculer les tickets disponibles
+    const availableTickets = () => {
+        const total = event.totalTickets || 0;
+        const sold = event.ticketsSold || 0;
+        return total - sold;
+    };
+
+    const ticketsAvailable = availableTickets(); // On stocke la valeur pour éviter de recalculer à chaque fois
+
     const handleQuantityChange = (e) => {
         const value = parseInt(e.target.value);
-        if (value >= 1 && value <= availableTickets) {
+        if (value >= 1 && value <= ticketsAvailable) {
             setQuantity(value);
             setError('');
         }
     };
 
     const incrementQuantity = () => {
-        if (quantity < availableTickets) {
+        if (quantity < ticketsAvailable) {
             setQuantity(prev => prev + 1);
             setError('');
         }
@@ -44,8 +51,8 @@ const BookModal = ({ event, onClose, onBook }) => {
             return;
         }
 
-        if (quantity > availableTickets) {
-            setError(`Only ${availableTickets} tickets available`);
+        if (quantity > ticketsAvailable) {
+            setError(`Only ${ticketsAvailable} tickets available`);
             return;
         }
 
@@ -66,11 +73,33 @@ const BookModal = ({ event, onClose, onBook }) => {
             // On ne ferme pas le modal ici, le parent le fera
 
         } catch (err) {
-            // Gestion des erreurs venant du parent
-            setError(err.response.data.message || 'Failed to create reservation');
-        } finally {
-            setIsLoading(false);
+            // Gestion des erreurs venant du parent - version corrigée
+            const errorMessage = err.response?.data?.message ||
+                err.message ||
+                'Failed to create reservation';
+            setError(errorMessage);
         }
+    };
+
+    // Formater la date
+    const formatDate = (dateString) => {
+        const date = new Date(dateString);
+        const options = {
+            weekday: 'long',
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric'
+        };
+        return date.toLocaleDateString('en-US', options);
+    };
+
+    // Formater l'heure
+    const formatTime = (dateString) => {
+        const date = new Date(dateString);
+        return date.toLocaleTimeString('en-US', {
+            hour: '2-digit',
+            minute: '2-digit'
+        });
     };
 
     return (
@@ -90,23 +119,59 @@ const BookModal = ({ event, onClose, onBook }) => {
                     </button>
                 </div>
 
-                {/* Event Info */}
+                {/* Event Info - Version améliorée */}
                 <div className="event-summary">
-                    <div className="event-image">
-                        {/* Vous pouvez ajouter l'image si disponible */}
-                        {/* <img src={event.image || 'https://via.placeholder.com/100'} alt={event.title} /> */}
+                    <div className="event-header">
+                        <h3 className="event-title">{event.title}</h3>
+                        <div className="event-price-badge">
+                            <span className="price-tag">${ticketPrice.toFixed(2)}</span>
+                            <span className="price-label">per ticket</span>
+                        </div>
                     </div>
-                    <div className="event-info">
-                        <h3>{event.title}</h3>
-                        <div className="event-details">
-                            <span className="detail-item">
+
+                    <div className="event-details-grid">
+                        <div className="detail-card">
+                            <div className="detail-icon-wrapper">
                                 <span className="detail-icon">📍</span>
-                                {event.location}
-                            </span>
-                            <span className="detail-item">
+                            </div>
+                            <div className="detail-content">
+                                <div className="detail-label">Location</div>
+                                <div className="detail-value">{event.location}</div>
+                            </div>
+                        </div>
+
+                        <div className="detail-card">
+                            <div className="detail-icon-wrapper">
                                 <span className="detail-icon">📅</span>
-                                {new Date(event.startAt).toLocaleDateString()}
-                            </span>
+                            </div>
+                            <div className="detail-content">
+                                <div className="detail-label">Date</div>
+                                <div className="detail-value">
+                                    <div>{formatDate(event.startAt)}</div>
+                                    <div className="detail-time">{formatTime(event.startAt)}</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div className="detail-card">
+                            <div className="detail-icon-wrapper">
+                                <span className="detail-icon">👥</span>
+                            </div>
+                            <div className="detail-content">
+                                <div className="detail-label">Availability</div>
+                                <div className="detail-value">
+                                    <div className={`availability-status ${ticketsAvailable > 0 ? 'available' : 'sold-out'}`}>
+                                        {ticketsAvailable > 0 ? (
+                                            <>
+                                                <span className="availability-dot"></span>
+                                                {ticketsAvailable} tickets left
+                                            </>
+                                        ) : (
+                                            'Sold Out'
+                                        )}
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -118,10 +183,12 @@ const BookModal = ({ event, onClose, onBook }) => {
                         <div className="section-header">
                             <h4>Select Quantity</h4>
                             <span className="available-tickets">
-                                {availableTickets} tickets available
+                                {ticketsAvailable} tickets available
+                                {ticketsAvailable <= 0 && (
+                                    <span className="sold-out-badge">SOLD OUT</span>
+                                )}
                             </span>
                         </div>
-
                         <div className="quantity-selector">
                             <button
                                 type="button"
@@ -138,7 +205,7 @@ const BookModal = ({ event, onClose, onBook }) => {
                                     value={quantity}
                                     onChange={handleQuantityChange}
                                     min="1"
-                                    max={availableTickets}
+                                    max={ticketsAvailable}
                                     className="quantity-input"
                                 />
                                 <span className="quantity-label">tickets</span>
@@ -148,7 +215,7 @@ const BookModal = ({ event, onClose, onBook }) => {
                                 type="button"
                                 className="quantity-btn plus"
                                 onClick={incrementQuantity}
-                                disabled={quantity >= availableTickets}
+                                disabled={quantity >= ticketsAvailable}
                             >
                                 +
                             </button>
@@ -156,7 +223,7 @@ const BookModal = ({ event, onClose, onBook }) => {
 
                         <div className="quantity-hint">
                             <span className="hint-icon">💡</span>
-                            Select between 1 and {availableTickets} tickets
+                            Select between 1 and {ticketsAvailable} tickets
                         </div>
                     </div>
 
@@ -208,7 +275,7 @@ const BookModal = ({ event, onClose, onBook }) => {
                         <button
                             type="submit"
                             className="primary-button"
-                            disabled={isLoading || !availableTickets}
+                            disabled={isLoading || ticketsAvailable <= 0}
                         >
                             {isLoading ? (
                                 <>
