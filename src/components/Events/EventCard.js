@@ -110,7 +110,7 @@ const EventCard = ({ event, onDelete, onBook }) => {
                             className="action-btn primary view-details-btn"
                             onClick={() => setShowDetailsModal(true)}
                         >
-                            👁️ View Details
+                             View Details
                         </button>
 
                         {userRole === 'ROLE_USER' && (
