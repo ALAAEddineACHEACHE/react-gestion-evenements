@@ -223,7 +223,7 @@ const BookModal = ({ event, onClose, onBook }) => {
 
                         <div className="quantity-hint">
                             <span className="hint-icon">💡</span>
-                            Select between 1 and {ticketsAvailable} tickets
+                            Select between 1 and 4 tickets
                         </div>
                     </div>
 

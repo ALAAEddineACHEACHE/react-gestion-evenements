@@ -37,6 +37,25 @@ export const getEvents = async (token = null) => {
     }
     return axios.get(BASE_URL, { headers });
 };
+// export const getEvents = async (token, page = 0, size = 6) => {
+//     try {
+//         const response = await axios.get(`${BASE_URL}/events`, {
+//             headers: {
+//                 'Authorization': `Bearer ${token}`
+//             },
+//             params: {
+//                 page: page,
+//                 size: size,
+//                 sort: 'startAt,desc' // Tri par date décroissante
+//             }
+//         });
+//         return response;
+//     } catch (error) {
+//         throw error;
+//     }
+// };
+
+
 
 export const getEventById = async (id, token = null) => {
     const headers = {};

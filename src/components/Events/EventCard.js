@@ -72,6 +72,11 @@ const EventCard = ({ event, onDelete, onBook }) => {
                             e.target.src = 'https://via.placeholder.com/400x200';
                         }}
                     />
+                    {/* Badge pour le prix */}
+                    <div className="price-badge">
+                        ${event.ticketPrice || '0'}
+                    </div>
+
                     <span className="event-category">{event.category || 'General'}</span>
                     {/* Badge pour tickets disponibles */}
                     {userRole === 'ROLE_USER' && (

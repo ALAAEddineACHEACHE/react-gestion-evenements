@@ -288,19 +288,19 @@
     transform: scale(1.05);
 }
 
-.event-category {
-    position: absolute;
-    top: 15px;
-    right: 15px;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    color: white;
-    padding: 6px 16px;
-    border-radius: 20px;
-    font-size: 12px;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-}
+/*.event-category {*/
+/*    position: absolute;*/
+/*    top: 15px;*/
+/*    right: 15px;*/
+/*    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);*/
+/*    color: white;*/
+/*    padding: 6px 16px;*/
+/*    border-radius: 20px;*/
+/*    font-size: 12px;*/
+/*    font-weight: 600;*/
+/*    text-transform: uppercase;*/
+/*    letter-spacing: 0.5px;*/
+/*}*/
 
 .event-content {
     padding: 20px;
@@ -1035,4 +1035,78 @@
     background: linear-gradient(135deg, #3366ff 0%, #1a4dff 100%);
     transform: translateY(-2px);
     box-shadow: 0 6px 20px rgba(51, 102, 255, 0.3);
+}
+/* Badge de prix */
+.price-badge {
+    position: absolute;
+    top: 15px;
+    left: 15px;
+    background: linear-gradient(135deg, #ff6b6b 0%, #ff8e53 100%);
+    color: white;
+    padding: 8px 15px;
+    border-radius: 20px;
+    font-size: 18px;
+    font-weight: 700;
+    box-shadow: 0 4px 15px rgba(255, 107, 107, 0.3);
+    z-index: 2;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    min-width: 60px;
+    justify-content: center;
+}
+
+.price-badge::before {
+    font-size: 14px;
+    opacity: 0.9;
+    margin-right: 2px;
+}
+
+/* Ajustement pour le badge de catégorie pour éviter le chevauchement */
+.event-category {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 6px 16px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    z-index: 2;
+}
+
+/* Ajustement pour le badge de disponibilité */
+.ticket-availability-badge {
+    position: absolute;
+    bottom: 15px;
+    right: 15px;
+    z-index: 2;
+}
+
+.ticket-availability-badge .available {
+    background: rgba(46, 204, 113, 0.9);
+    color: white;
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    box-shadow: 0 4px 12px rgba(46, 204, 113, 0.3);
+}
+
+.ticket-availability-badge .sold-out {
+    background: rgba(231, 76, 60, 0.9);
+    color: white;
+    padding: 6px 15px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 700;
+    box-shadow: 0 4px 12px rgba(231, 76, 60, 0.3);
+    text-transform: uppercase;
+    letter-spacing: 1px;
 }
